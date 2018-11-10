@@ -22,7 +22,7 @@ class TestUGetCli(unittest.TestCase):
     def test_cli_uget_help(self):
         """Test cli: uget help"""
         runner = CliRunner()
-        result = runner.invoke(cli.cli, ['--help'], obj={})
+        result = runner.invoke(cli.ugetcli, ['--help'], obj={})
         assert result.exit_code == 0
         assert '--help' in  result.output
         assert 'Show this message and exit.' in result.output
@@ -45,7 +45,7 @@ class TestUGetCli(unittest.TestCase):
         valid_nuget_executable_mock.return_value = True
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, ['pack'], input='custom_nuget.exe\n', obj={})
+        result = runner.invoke(cli.ugetcli, ['pack'], input='custom_nuget.exe\n', obj={})
         assert result.exit_code == 0
         expected_args = ['pack', '.', "-OutputDirectory", '.', "-Properties",
                          'unityPackagePath=test_1.0.0_Debug.unitypackage;Configuration=Debug', "-Verbosity", "normal"]
@@ -69,7 +69,7 @@ class TestUGetCli(unittest.TestCase):
         valid_nuget_executable_mock.return_value = True
 
         runner = CliRunner(env={'NUGET_PATH': 'custom_nuget.exe'})
-        result = runner.invoke(cli.cli, ['pack'], obj={})
+        result = runner.invoke(cli.ugetcli, ['pack'], obj={})
         assert result.exit_code == 0
         expected_args = ['pack', '.', "-OutputDirectory", '.', "-Properties",
                          'unityPackagePath=test_1.0.0_Debug.unitypackage;Configuration=Debug', "-Verbosity", "normal"]
@@ -90,7 +90,7 @@ class TestUGetCli(unittest.TestCase):
             with open('test.nupkg', 'w') as f:
                 f.write('mock_nuget_package_content')
             args = ['push', '--path', 'test.nupkg', '--nuget-path', 'custom_nuget.exe', '--feed', 'http://test.com/']
-            result = runner.invoke(cli.cli, args, obj={})
+            result = runner.invoke(cli.ugetcli, args, obj={})
             assert result.exit_code == 0
             expected_args = ['push', 'test.nupkg', '-Verbosity', 'normal', '-Source', 'http://test.com/']
             assert nuget_run.called_with('custom_nuget.exe', expected_args)

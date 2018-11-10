@@ -36,7 +36,7 @@ setup(
     description="uGet Command Line Interface",
     entry_points={
         'console_scripts': [
-            'ugetcli=ugetcli.cli:main',
+            'ugetcli=ugetcli.__main__:main',
         ],
     },
     install_requires=requirements,
