@@ -1,5 +1,5 @@
 import os
-from subprocess import call, DEVNULL, Popen
+from subprocess import Popen
 
 """
 Helper module that provides access to Unity methods

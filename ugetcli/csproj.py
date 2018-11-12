@@ -12,6 +12,11 @@ class CsProj:
     """
     Facade class that provides access to access Visual C# Project information
     """
+    xml_namespace = "{http://schemas.microsoft.com/developer/msbuild/2003}"
+    xml_element_property_group = xml_namespace+"PropertyGroup"
+    xml_element_assembly_name = xml_namespace+"AssemblyName"
+    xml_element_output_path = xml_namespace+"OutputPath"
+
     def __init__(self, path, debug=False):
         self.path = CsProj.get_csproj_at_path(path)
         if self.path is None:
@@ -23,11 +28,8 @@ class CsProj:
         tree = ET.parse(self.path)
         root = tree.getroot()
 
-        xml_element_property_group = "PropertyGroup"
-        xml_element_assembly_name = "AssemblyName"
-
-        for property_group in root.findall(xml_element_property_group):
-            assembly_name = property_group.find(xml_element_assembly_name)
+        for property_group in root.findall(self.xml_element_property_group):
+            assembly_name = property_group.find(self.xml_element_assembly_name)
             if assembly_name is not None:
                 return assembly_name.text
         return None
@@ -36,13 +38,11 @@ class CsProj:
         tree = ET.parse(self.path)
         root = tree.getroot()
 
-        xml_element_property_group = "PropertyGroup"
-        xml_element_output_path = "OutputPath"
         condition = " '$(Configuration)|$(Platform)' == '{0}|AnyCPU' ".format(configuration)
 
-        for property_group in root.findall(xml_element_property_group):
-            output_path = property_group.find(xml_element_output_path)
-            if output_path is not None and property_group["Condition"] == condition:
+        for property_group in root.findall(self.xml_element_property_group):
+            output_path = property_group.find(self.xml_element_output_path)
+            if output_path is not None and property_group.attrib["Condition"] == condition:
                 return output_path.text
         return None
 

@@ -1,7 +1,7 @@
 import os
 import sys
 import glob
-from subprocess import call, DEVNULL, Popen
+from subprocess import call, Popen
 
 """
 Helper module that provides access to MSBuild methods
@@ -25,7 +25,7 @@ class MsBuildRunner:
         return self._run_msbuild(options)
 
     def _run_msbuild(self, options):
-        process = Popen([self.msbuild_path] + options)
+        process = Popen([self.msbuild_path] + options, shell=True)
         return process.wait()
 
     @staticmethod
@@ -52,7 +52,8 @@ class MsBuildRunner:
         """
         Returns True if path is a valid msbuild executable, otherwise False
         """
-        try:
-            return call(msbuild_path + " /?", shell=True, stderr=DEVNULL, stdout=DEVNULL) == 0
-        except FileNotFoundError:
-            return False
+        with open(os.devnull, "w") as devnull:
+            try:
+                return call(msbuild_path + " /?", shell=True, stderr=devnull, stdout=devnull) == 0
+            except FileNotFoundError:
+                return False

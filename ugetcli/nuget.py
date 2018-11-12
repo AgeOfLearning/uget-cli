@@ -1,5 +1,5 @@
 import os
-from subprocess import call, DEVNULL, Popen
+from subprocess import call, Popen
 
 """
 Helper module that provides access to NuGet methods
@@ -57,7 +57,7 @@ class NuGetRunner:
         Returns True if path is a valid NuGet executable, otherwise False
         """
         try:
-            return call(nuget_path + " help", shell=True, stderr=DEVNULL, stdout=DEVNULL) == 0
+            return call(nuget_path + " help", shell=True, stderr=os.devnull, stdout=os.devnull) == 0
         except FileNotFoundError:
             return False
 

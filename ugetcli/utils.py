@@ -74,3 +74,23 @@ def validate_url(url):
         return result.scheme
     except:
         return False
+
+
+def copy_replace_directory(src_dir, dst_dir):
+    """
+    Walks over the directory tree and copies one directory
+    over to another, replacing existing files
+    :param src_dir: Source directory path
+    :param dst_dir: Destination directory path
+    :return:
+    """
+    for src_dir, dirs, files in os.walk(src_dir):
+        dst_dir = src_dir.replace(src_dir, dst_dir, 1)
+        if not os.path.exists(dst_dir):
+            os.makedirs(dst_dir)
+        for file_ in files:
+            src_file = os.path.join(src_dir, file_)
+            dst_file = os.path.join(dst_dir, file_)
+            if os.path.exists(dst_file):
+                os.remove(dst_file)
+            shutil.move(src_file, dst_dir)

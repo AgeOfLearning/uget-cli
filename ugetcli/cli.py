@@ -45,9 +45,9 @@ def _create_command_class(config_path_param_name, config_base_dir_param_name):
                 config_file_path = os.path.join(config_file_base_dir, config_file_path)
             if os.path.isfile(config_file_path):
                 with open(config_file_path) as f:
-                    config_data = json.loads(f)
+                    config_data = json.load(f)
                     for param, value in ctx.params.items():
-                        if value is None and param in config_data:
+                        if param in config_data:
                             ctx.params[param] = config_data[param]
             return super(UGetCommand, self).invoke(ctx)
     return UGetCommand
@@ -86,9 +86,9 @@ def ugetcli(ctx, debug, quiet):
 @click.option('--config', type=click.Path(),
               help="Config file path.")
 @click.pass_context
-def build(ctx, path, output_dir, configuration, msbuild_path, unity_path, unity_project_path, package_root, clean):
+def build(ctx, path, output_dir, configuration, msbuild_path, unity_path, unity_project_path, root_directory, clean, config):
     uget = UGetCli(ctx.obj['DEBUG'], ctx.obj['QUIET'])
-    return uget.build(path, output_dir, configuration, msbuild_path, unity_path, unity_project_path, package_root, clean)
+    return uget.build(path, output_dir, configuration, msbuild_path, unity_path, unity_project_path, root_directory, clean)
 
 
 @ugetcli.command('pack', cls=_create_command_class('config', 'path'),
@@ -106,7 +106,7 @@ def build(ctx, path, output_dir, configuration, msbuild_path, unity_path, unity_
 @click.option('--config', type=click.Path(),
               help="Config file path.")
 @click.pass_context
-def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration):
+def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, config):
     uget = UGetCli(ctx.obj['DEBUG'], ctx.obj['QUIET'])
     return uget.pack(path, output_dir, nuget_path, unitypackage_path, configuration)
 
@@ -124,6 +124,6 @@ def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration):
 @click.option('--config', type=click.Path(),
               help="Config file path.")
 @click.pass_context
-def push(ctx, path, feed, nuget_path, api_key):
+def push(ctx, path, feed, nuget_path, api_key, config):
     uget = UGetCli(ctx.obj['DEBUG'], ctx.obj['QUIET'])
     return uget.push(path, feed, nuget_path, api_key)
