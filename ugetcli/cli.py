@@ -55,12 +55,8 @@ def _create_command_class(config_path_param_name, config_base_dir_param_name):
 
 # uGet Command Group
 @click.group()
-@click.option('--debug/--no-debug', default=False)
-@click.option('-q', '--quiet', type=bool, default=False)
-@click.pass_context
-def ugetcli(ctx, debug, quiet):
-    ctx.obj['DEBUG'] = debug
-    ctx.obj['QUIET'] = quiet
+def ugetcli():
+    pass
 
 
 # uGet Commands
@@ -85,9 +81,11 @@ def ugetcli(ctx, debug, quiet):
               help="If set, cleans other .unitypackage files with the same configuration at the output location.")
 @click.option('--config', type=click.Path(),
               help="Config file path.")
+@click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
+@click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def build(ctx, path, output_dir, configuration, msbuild_path, unity_path, unity_project_path, root_directory, clean, config):
-    uget = UGetCli(ctx.obj['DEBUG'], ctx.obj['QUIET'])
+def build(ctx, path, output_dir, configuration, msbuild_path, unity_path, unity_project_path, root_directory, clean, config, debug, quiet):
+    uget = UGetCli(debug, quiet)
     return uget.build(path, output_dir, configuration, msbuild_path, unity_path, unity_project_path, root_directory, clean)
 
 
@@ -105,9 +103,11 @@ def build(ctx, path, output_dir, configuration, msbuild_path, unity_path, unity_
               help='Build configuration.')
 @click.option('--config', type=click.Path(),
               help="Config file path.")
+@click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
+@click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, config):
-    uget = UGetCli(ctx.obj['DEBUG'], ctx.obj['QUIET'])
+def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, config, debug, quiet):
+    uget = UGetCli(debug, quiet)
     return uget.pack(path, output_dir, nuget_path, unitypackage_path, configuration)
 
 
@@ -123,7 +123,9 @@ def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, co
               help='NuGet Api Key.')
 @click.option('--config', type=click.Path(),
               help="Config file path.")
+@click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
+@click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def push(ctx, path, feed, nuget_path, api_key, config):
-    uget = UGetCli(ctx.obj['DEBUG'], ctx.obj['QUIET'])
+def push(ctx, path, feed, nuget_path, api_key, config, debug, quiet):
+    uget = UGetCli(debug, quiet)
     return uget.push(path, feed, nuget_path, api_key)

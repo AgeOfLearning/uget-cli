@@ -93,4 +93,4 @@ def copy_replace_directory(src_dir, dst_dir):
             dst_file = os.path.join(dst_dir, file_)
             if os.path.exists(dst_file):
                 os.remove(dst_file)
-            shutil.move(src_file, dst_dir)
+            shutil.copy(src_file, dst_dir)

@@ -108,11 +108,15 @@ class UGetCli:
             unitypackage_root_path_full_source = os.path.join(unity_project_path, unitypackage_root_path_relative)
             unitypackage_root_path_full_stage = os.path.join(unity_project_stage_path, unitypackage_root_path_relative)
 
-            utils.copy_replace_directory(unitypackage_root_path_full_source, unitypackage_root_path_full_stage)
+            utils.copy_replace_directory(unitypackage_root_path_full_stage, unitypackage_root_path_full_source)
+
+        if not os.path.isfile(unitypackage_path):
+            raise RuntimeError("UnityPackage not found at path: " + unitypackage_path)
+        click.secho("Unity package has successfully been built: " + unitypackage_path)
 
         # If clean flag is provided, remove other unity packages located at the output directory
         if clean:
-            self._remove_old_unitypackages(output_dir, assembly_name, configuration)
+            self._remove_old_unitypackages(output_dir, assembly_name, configuration, version)
 
     def pack(self, path, output_dir, nuget_path, unitypackage_path, configuration):
         # Locate nuget executable
@@ -120,16 +124,19 @@ class UGetCli:
         nuget_runner = NuGetRunner(nuget_path, self.debug)
 
         # Locate project name and version
-        if NuSpec.path_is_nuspec_file(path):
-            nuspec = NuSpec(path, self.debug)
-            package_id = nuspec.get_package_id()
-            version = nuspec.get_package_version()
-        elif CsProj.path_is_csproj_file(path):
+        csproj_file_path = CsProj.get_csproj_at_path(path)
+        if csproj_file_path is not None:
             csproj = CsProj(path, self.debug)
             package_id = csproj.get_assembly_name()
             version = csproj.get_assembly_version()
         else:
-            raise click.UsageError("path must be a valid path to .nuspec, .csproj, or directory containing either")
+            nuspec_file_path = NuSpec.get_nuspec_at_path(path)
+            if nuspec_file_path is not None:
+                nuspec = NuSpec(path, self.debug)
+                package_id = nuspec.get_package_id()
+                version = nuspec.get_package_version()
+            else:
+                raise click.UsageError("path must be a valid path to .nuspec, .csproj, or directory containing either")
 
         if not unitypackage_path:
             if not package_id:
@@ -138,7 +145,7 @@ class UGetCli:
                 raise click.UsageError("Failed to identify package version.")
 
             unitypackage_name = utils.get_unitypackage_filename(package_id, version, configuration)
-            unitypackage_path = os.path.join(path, 'Output', unitypackage_name)
+            unitypackage_path = os.path.join(output_dir, unitypackage_name)
 
         return nuget_runner.pack(path, output_dir, configuration, unitypackage_path)
 
@@ -246,7 +253,7 @@ class UGetCli:
         if exit_code != 0:
             raise RuntimeError("msbuild failed with non-zero exit code: " + str(exit_code))
 
-    def _remove_old_unitypackages(self, directory, name, configuration):
+    def _remove_old_unitypackages(self, directory, name, configuration, except_version=None):
         """ Removes old .unitypackages with the same target name and configuration"""
         regex = re.compile(self.UNITYPACKAGE_REGEX)
         if os.path.isdir(directory):
@@ -260,5 +267,8 @@ class UGetCli:
                 package_version = match.group(2)
                 package_configuration = match.group(3)
 
-                if name == package_name and configuration == package_configuration:
-                    os.remove(os.path.join(directory, filename))
+                if name == package_name and configuration == package_configuration and \
+                    (except_version is None or package_version != except_version):
+                    unitypackage_path = os.path.join(directory, filename)
+                    os.remove(unitypackage_path)
+                    click.secho("Removed old .unitypackage at " + unitypackage_path)

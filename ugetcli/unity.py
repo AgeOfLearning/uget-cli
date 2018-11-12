@@ -1,5 +1,7 @@
 import os
+import click
 from subprocess import Popen
+
 
 """
 Helper module that provides access to Unity methods
@@ -27,7 +29,7 @@ class UnityRunner:
         stderr_log_path = os.path.join(log_directory, UnityRunner.stderr_filename)
 
         arguments = ["-projectPath", project_path,
-                     "-exportPackage", package_root, output_path,
+                     "-exportPackage", package_root, os.path.abspath(output_path),
                      "-logFile", editor_log_path,
                      "-batchmode",
                      "-quit"]
@@ -35,6 +37,10 @@ class UnityRunner:
         return self._run_editor(arguments, stdout_log_path, stderr_log_path)
 
     def _run_editor(self, options, stdout_log_path, stderr_log_path):
+        if self.debug:
+            args_str = " ".join([self.unity_path] + options)
+            click.secho("Running " + args_str)
+
         with open(stdout_log_path, "wb") as stdout, open(stderr_log_path, "wb") as stderr:
             process = Popen([self.unity_path] + options, stderr=stderr, stdout=stdout)
             return process.wait()

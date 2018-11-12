@@ -1,5 +1,6 @@
 import os
 from subprocess import call, Popen
+import click
 
 """
 Helper module that provides access to NuGet methods
@@ -28,6 +29,7 @@ class NuGetRunner:
         return self._run_nuget(options)
 
     def push(self, path, source_url, api_key):
+        exit(123)
         """ Runs NuGet to push NuGet package to the provided feed """
         options = ["push", path,
                    "-Verbosity", "detailed" if self.debug else "normal"]
@@ -39,7 +41,11 @@ class NuGetRunner:
         return self._run_nuget(options)
 
     def _run_nuget(self, options):
-        process = Popen([self.nuget_path] + options)
+        if self.debug:
+            args_str = " ".join([self.nuget_path] + options)
+            click.secho("Running " + args_str)
+
+        process = Popen([self.nuget_path] + options, shell=True)
         return process.wait()
 
     @staticmethod
@@ -56,10 +62,11 @@ class NuGetRunner:
         """
         Returns True if path is a valid NuGet executable, otherwise False
         """
-        try:
-            return call(nuget_path + " help", shell=True, stderr=os.devnull, stdout=os.devnull) == 0
-        except FileNotFoundError:
-            return False
+        with open(os.devnull, "w") as devnull:
+            try:
+                return call(nuget_path + " help", shell=True, stderr=devnull, stdout=devnull) == 0
+            except FileNotFoundError:
+                return False
 
     @staticmethod
     def _build_nuget_properties_str(properties):
