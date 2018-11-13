@@ -36,18 +36,21 @@ class MsBuildRunner:
         """
         Attempts to find msbuild executable in the local filesystem
         """
-        if MsBuildRunner.valid_msbuild_executable("msbuild"):
-            return "msbuild"
+        # By default, Mono install on Windows might not have 3.5 target installed and mono msbuild would fail.
+        # Attempt to find Visual Studio installation first, then fall back to msbuild from PATH
         if sys.platform == 'win32':
-            # On windows, default msbuild locations are .NET installation folder and Visual Studio installation folder
+            # On windows, default msbuild locations are Visual Studio installation folder and .NET installation folder
             msbuild_search_patterns = [
-                os.environ['WINDIR'] + "\\Microsoft.NET\\Framework\\*\\msbuild.exe",
-                os.environ["ProgramFiles"] + "\\Microsoft Visual Studio\\*\\Community\\MSBuild\\*\\Bin\\MSBuild.exe"
+                os.environ["ProgramFiles"] + "\\Microsoft Visual Studio\\*\\Community\\MSBuild\\*\\Bin\\MSBuild.exe",
+                os.environ['WINDIR'] + "\\Microsoft.NET\\Framework\\*\\msbuild.exe"
             ]
             for pattern in msbuild_search_patterns:
                 for location in glob.glob(pattern):
                     if MsBuildRunner.valid_msbuild_executable(location):
                         return location
+        if MsBuildRunner.valid_msbuild_executable("msbuild"):  # Try from PATH
+            return "msbuild"
+
         return None
 
     @staticmethod
