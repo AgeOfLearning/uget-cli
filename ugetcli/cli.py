@@ -61,15 +61,33 @@ def ugetcli():
 
 # uGet Commands
 @ugetcli.command('build', cls=_create_command_class('config', 'path'),
-                 help='Builds Unity Package (.unitypackage)')
+                 help='Builds CSharp project (.csproj)')
+@click.option('-p', '--path', type=click.Path(), default=".", callback=_validate_path_csproj,
+              help="Path to Visual Studio project (.csproj).")
+@click.option('-c', '--configuration', type=click.Choice(['Debug', 'Release']), default='Release',
+              help='Build configuration.')
+@click.option('-m', '--msbuild-path', type=click.Path(), default=None, envvar='MSBUILD_PATH',
+              help="Path to msbuild executable.")
+@click.option('-c', '--clean', is_flag=True,
+              help="If set, cleans project before rebuilding.")
+@click.option('--config', type=click.Path(),
+              help="Config file path.")
+@click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
+@click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
+@click.pass_context
+def build(ctx, path, configuration, msbuild_path, clean, config, debug, quiet):
+    uget = UGetCli(debug, quiet)
+    return uget.create(path, configuration, msbuild_path, clean)
+
+
+@ugetcli.command('create', cls=_create_command_class('config', 'path'),
+                 help='Creates Unity Package (.unitypackage)')
 @click.option('-p', '--path', type=click.Path(), default=".", callback=_validate_path_csproj,
               help="Path to Visual Studio project (.csproj).")
 @click.option('-o', '--output-dir', type=click.Path(), default='Output',
               help='Output .unitypackage directory.')
 @click.option('-c', '--configuration', type=click.Choice(['Debug', 'Release']), default='Release',
               help='Build configuration.')
-@click.option('-m', '--msbuild-path', type=click.Path(), default=None, envvar='MSBUILD_PATH',
-              help="Path to msbuild executable.")
 @click.option('-u', '--unity-path', type=click.Path(), default=None, envvar='UNITY_PATH',
               help='Path to Unity editor executable.')
 @click.option('-t', '--unity-project-path', type=click.Path(), default=None,
@@ -84,9 +102,9 @@ def ugetcli():
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def build(ctx, path, output_dir, configuration, msbuild_path, unity_path, unity_project_path, root_directory, clean, config, debug, quiet):
+def build(ctx, path, output_dir, configuration, unity_path, unity_project_path, root_directory, clean, config, debug, quiet):
     uget = UGetCli(debug, quiet)
-    return uget.build(path, output_dir, configuration, msbuild_path, unity_path, unity_project_path, root_directory, clean)
+    return uget.create(path, output_dir, configuration, unity_path, unity_project_path, root_directory, clean)
 
 
 @ugetcli.command('pack', cls=_create_command_class('config', 'path'),

@@ -16,12 +16,15 @@ class MsBuildRunner:
         self.msbuild_path = msbuild_path
         self.debug = debug
 
-    def build(self, project_path, configuration):
+    def build(self, project_path, configuration, clean=False):
         options = [
             project_path,
             '/p:"Configuration={0}"'.format(configuration),
             '/verbosity:{0}'.format("detailed" if self.debug else "normal")
         ]
+        if clean:
+            options.append('/t:Clean')
+
         return self._run_msbuild(options)
 
     def _run_msbuild(self, options):

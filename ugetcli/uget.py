@@ -23,18 +23,31 @@ class UGetCli:
         self.debug = debug
         self.quiet = quiet
 
-    def build(self, csproj_path, output_dir, configuration, msbuild_path, unity_path, unity_project_path,
-              unitypackage_root_path_relative, clean):
-        """Builds .unitypackage that contains project assembly and assets
+    def build(self, csproj_path, configuration, msbuild_path, clean):
+        """
+        Builds C Sharp project (.csproj). Simply wraps msbuild command.
+        :param path:
+        :param configuration:
+        :param msbuild_path:
+        :param clean:
+        :return:
+        """
+        csproj_path = self._locate_csproj_at_path(csproj_path)
+        msbuild_path = self._locate_msbuild_path(msbuild_path)
+        msbuild = MsBuildRunner(msbuild_path, self.debug)
+        return msbuild.build(csproj_path, configuration, clean)
+
+    def create(self, csproj_path, output_dir, configuration, unity_path, unity_project_path,
+               unitypackage_root_path_relative, clean):
+        """
+        Creates .unitypackage that contains project assembly and assets
         :param path: Path to .csproj
         :param output_dir: Output directory into which .unitypackage is being built
         :param configuration: Debug or Release
-        :param msbuild_path: Path to msbuild executable
         :param unity_path: Path to the Unity editor executable
         :param unity_project_path: Path to the unity project used to build .unitypackage
         :param unitypackage_root_path_relative: Root path inside a unity_project_path used to export .unitypackage
         :param clean: If set, other Unity Packages will be removed from the output folder if they match configuration
-        :return:
         """
         csproj = CsProj(csproj_path)
 
@@ -56,10 +69,6 @@ class UGetCli:
 
         dll_path = os.path.join(csproj_output_dir, dll_name)
         pdb_path = os.path.join(csproj_output_dir, pdb_name)
-
-        # Build csproj using msbuild? Temporarily disabled until there is good way to find correct msbuild version
-        # Currently, default "which msbuild" pointed to Mono which failed to build .NET 3.5 projects
-        # self._build_csproj(msbuild_path, csproj_path, configuration)
 
         # Copy output dll and pdb into unity project folder
         if not os.path.isfile(dll_path):
@@ -119,6 +128,15 @@ class UGetCli:
             self._remove_old_unitypackages(output_dir, assembly_name, configuration, version)
 
     def pack(self, path, output_dir, nuget_path, unitypackage_path, configuration):
+        """
+        Packs NuGet Package.
+        :param path: Path to the .csproj or .nuspec, or a directory containing either
+        :param output_dir: Output directory - this is where .nupkg file will be built
+        :param nuget_path: Path to the NuGet executable
+        :param unitypackage_path: Path to the .unitypackge
+        :param configuration: Configuration - Debug/Release
+        :return: Exit code of the NuGet Pack command
+        """
         # Locate nuget executable
         nuget_path = self._locate_nuget_path(nuget_path)
         nuget_runner = NuGetRunner(nuget_path, self.debug)
@@ -150,6 +168,14 @@ class UGetCli:
         return nuget_runner.pack(path, output_dir, configuration, unitypackage_path)
 
     def push(self, path, feed, nuget_path, api_key):
+        """
+        Pushes NuGet package on to the NuGet feed.
+        :param path: Path to the NuGet Package
+        :param feed: NuGet feed URI
+        :param nuget_path: Path to the NuGet executable
+        :param api_key: NuGet Api Key
+        :return: Exit code of the NuGet push command
+        """
         nupkg_path = self._locate_nupkg_at_path(path)
         nuget_path = self._locate_nuget_path(nuget_path)
         nuget = NuGetRunner(nuget_path)
@@ -232,26 +258,28 @@ class UGetCli:
 
         return nupkg_path
 
+    def _locate_csproj_at_path(self, path):
+        """
+        Finds .csproj file at the provided path
+        :param path:
+        :return:
+        """
+        if path.endswith(".csproj"):
+            if not os.path.isfile(path):
+                raise click.FileError(path)
+            return path
+
+        csproj_path = CsProj.get_csproj_at_path(path)
+
+        if not csproj_path:
+            raise click.UsageError("Failed to find Nuget Package (.nupkg) or Visual Studio project at path " + path)
+
     def _get_ignore_unityproject_patterns(self):
         """
         Returns shutils ignore patterns to exclude lock files from unity project
         :return: Ignore patterns
         """
         return shutil.ignore_patterns("UnityLockfile", "db.lock")
-
-    def _build_csproj(self, msbuild_path, csproj_path, configuration):
-        """
-        Builds .csproj file using msbuild
-        :param msbuild_path: Path to msbuild executable
-        :param csproj_path: Path to .csproj file or a directory containing one
-        :param configuration: Build configuration
-        :return:
-        """
-        msbuild_path = self._locate_msbuild_path(msbuild_path)
-        msbuild = MsBuildRunner(msbuild_path, self.debug)
-        exit_code = msbuild.build(csproj_path, configuration)
-        if exit_code != 0:
-            raise RuntimeError("msbuild failed with non-zero exit code: " + str(exit_code))
 
     def _remove_old_unitypackages(self, directory, name, configuration, except_version=None):
         """ Removes old .unitypackages with the same target name and configuration"""
