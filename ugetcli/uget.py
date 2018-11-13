@@ -154,7 +154,7 @@ class UGetCli:
                 package_id = nuspec.get_package_id()
                 version = nuspec.get_package_version()
             else:
-                raise click.UsageError("path must be a valid path to .nuspec, .csproj, or directory containing either")
+                raise click.UsageError("Path must be a valid path to .nuspec, .csproj, or directory containing either")
 
         if not unitypackage_path:
             if not package_id:
