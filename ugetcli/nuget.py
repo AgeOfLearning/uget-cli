@@ -66,7 +66,7 @@ class NuGetRunner:
         with open(os.devnull, "w") as devnull:
             try:
                 return call(escape_exe_path(nuget_path) + " help", shell=True, stderr=devnull, stdout=devnull) == 0
-            except FileNotFoundError:
+            except:
                 return False
 
     @staticmethod

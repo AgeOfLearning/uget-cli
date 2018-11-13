@@ -85,6 +85,8 @@ def escape_exe_path(executable_path):
     """
     if sys.platform == 'win32' and " " in executable_path:
         return '"' + executable_path + '"'
+    else:
+        return executable_path
 
 
 def copy_replace_directory(src_dir, dst_dir):
