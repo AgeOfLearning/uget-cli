@@ -23,7 +23,7 @@ class MsBuildRunner:
             project_path,
             '/t:Build' if not rebuild else '/t:Clean,Build',
             '/p:"Configuration={0}"'.format(configuration),
-            '/verbosity:{0}'.format("detailed" if self.debug else "normal")
+            '/verbosity:{0}'.format("detailed" if self.debug else "minimal")
         ]
 
         return self._run_msbuild(options)

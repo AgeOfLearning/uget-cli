@@ -39,7 +39,7 @@ def _create_command_class(config_path_param_name, config_base_dir_param_name):
     """
     class UGetCommand(click.Command):
         def invoke(self, ctx):
-            config_file_path = ctx.params[config_path_param_name] or "build.config.json"
+            config_file_path = ctx.params[config_path_param_name] or "uget.config.json"
             config_file_base_dir = ctx.params[config_base_dir_param_name] or ""
             if not os.path.isabs(config_file_path):
                 config_file_path = os.path.join(config_file_base_dir, config_file_path)
