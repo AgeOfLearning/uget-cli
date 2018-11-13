@@ -1,6 +1,8 @@
 import os
 import sys
 import glob
+import click
+from utils import escape_exe_path
 from subprocess import call, Popen
 
 """
@@ -16,19 +18,23 @@ class MsBuildRunner:
         self.msbuild_path = msbuild_path
         self.debug = debug
 
-    def build(self, project_path, configuration, clean=False):
+    def build(self, project_path, configuration, rebuild=False):
         options = [
             project_path,
+            '/t:Build' if not rebuild else '/t:Clean,Build',
             '/p:"Configuration={0}"'.format(configuration),
             '/verbosity:{0}'.format("detailed" if self.debug else "normal")
         ]
-        if clean:
-            options.append('/t:Clean')
 
         return self._run_msbuild(options)
 
     def _run_msbuild(self, options):
-        process = Popen([self.msbuild_path] + options, shell=True)
+        msbuild_path = escape_exe_path(self.msbuild_path)
+        command_str = " ".join([msbuild_path] + options)
+        if self.debug:
+            click.secho("Running " + command_str)
+
+        process = Popen(command_str, shell=True)
         return process.wait()
 
     @staticmethod
@@ -45,10 +51,13 @@ class MsBuildRunner:
                 os.environ['WINDIR'] + "\\Microsoft.NET\\Framework\\*\\msbuild.exe"
             ]
             for pattern in msbuild_search_patterns:
-                for location in glob.glob(pattern):
+                locations = glob.glob(pattern)
+
+                # Sort alphabetically and reverse to pick up latest versions
+                for location in sorted(locations, reverse=True):
                     if MsBuildRunner.valid_msbuild_executable(location):
                         return location
-        if MsBuildRunner.valid_msbuild_executable("msbuild"):  # Try from PATH
+        if MsBuildRunner.valid_msbuild_executable("msbuild"):  # Try default in PATH
             return "msbuild"
 
         return None
@@ -60,6 +69,6 @@ class MsBuildRunner:
         """
         with open(os.devnull, "w") as devnull:
             try:
-                return call(msbuild_path + " /?", shell=True, stderr=devnull, stdout=devnull) == 0
+                return call(escape_exe_path(msbuild_path) + " /?", shell=True, stderr=devnull, stdout=devnull) == 0
             except FileNotFoundError:
                 return False

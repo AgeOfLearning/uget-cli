@@ -23,19 +23,19 @@ class UGetCli:
         self.debug = debug
         self.quiet = quiet
 
-    def build(self, csproj_path, configuration, msbuild_path, clean):
+    def build(self, csproj_path, configuration, msbuild_path, rebuild):
         """
         Builds C Sharp project (.csproj). Simply wraps msbuild command.
-        :param path:
-        :param configuration:
-        :param msbuild_path:
-        :param clean:
+        :param path: Path to the .csproj or a directory containing one
+        :param configuration: Build configuration - Debug/Release
+        :param msbuild_path: Path to the msbuild executable
+        :param rebuild: If set, forces msbuild to rebuild the project
         :return:
         """
         csproj_path = self._locate_csproj_at_path(csproj_path)
         msbuild_path = self._locate_msbuild_path(msbuild_path)
         msbuild = MsBuildRunner(msbuild_path, self.debug)
-        return msbuild.build(csproj_path, configuration, clean)
+        return msbuild.build(csproj_path, configuration, rebuild)
 
     def create(self, csproj_path, output_dir, configuration, unity_path, unity_project_path,
                unitypackage_root_path_relative, clean):
@@ -51,7 +51,7 @@ class UGetCli:
         """
         csproj = CsProj(csproj_path)
 
-        # Read csproj properties - assembly name, version and output direcotry
+        # Read csproj properties - assembly name, version and output directory
         assembly_name = csproj.get_assembly_name()
         if not assembly_name:
             raise click.UsageError("Failed to identify package id.")
@@ -273,6 +273,8 @@ class UGetCli:
 
         if not csproj_path:
             raise click.UsageError("Failed to find Nuget Package (.nupkg) or Visual Studio project at path " + path)
+
+        return csproj_path
 
     def _get_ignore_unityproject_patterns(self):
         """

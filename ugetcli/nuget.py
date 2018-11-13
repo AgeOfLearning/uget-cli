@@ -1,6 +1,7 @@
 import os
 from subprocess import call, Popen
 import click
+from utils import escape_exe_path
 
 """
 Helper module that provides access to NuGet methods
@@ -29,7 +30,6 @@ class NuGetRunner:
         return self._run_nuget(options)
 
     def push(self, path, source_url, api_key):
-        exit(123)
         """ Runs NuGet to push NuGet package to the provided feed """
         options = ["push", path,
                    "-Verbosity", "detailed" if self.debug else "normal"]
@@ -41,11 +41,12 @@ class NuGetRunner:
         return self._run_nuget(options)
 
     def _run_nuget(self, options):
+        nuget_path = escape_exe_path(self.nuget_path)
+        command_str = " ".join([nuget_path] + options)
         if self.debug:
-            args_str = " ".join([self.nuget_path] + options)
-            click.secho("Running " + args_str)
+            click.secho("Running " + command_str)
 
-        process = Popen([self.nuget_path] + options, shell=True)
+        process = Popen(command_str, shell=True)
         return process.wait()
 
     @staticmethod
@@ -64,7 +65,7 @@ class NuGetRunner:
         """
         with open(os.devnull, "w") as devnull:
             try:
-                return call(nuget_path + " help", shell=True, stderr=devnull, stdout=devnull) == 0
+                return call(escape_exe_path(nuget_path) + " help", shell=True, stderr=devnull, stdout=devnull) == 0
             except FileNotFoundError:
                 return False
 

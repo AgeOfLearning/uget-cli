@@ -1,5 +1,6 @@
 import contextlib
 import os
+import sys
 import tempfile
 import shutil
 import ntpath
@@ -74,6 +75,16 @@ def validate_url(url):
         return result.scheme
     except:
         return False
+
+
+def escape_exe_path(executable_path):
+    """
+    Escapes executable path to be runnable using subprocess.Popen with Shell=True
+    :param path: Path to escape
+    :return: Escaped path
+    """
+    if sys.platform == 'win32' and " " in executable_path:
+        return '"' + executable_path + '"'
 
 
 def copy_replace_directory(src_dir, dst_dir):

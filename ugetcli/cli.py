@@ -68,16 +68,16 @@ def ugetcli():
               help='Build configuration.')
 @click.option('-m', '--msbuild-path', type=click.Path(), default=None, envvar='MSBUILD_PATH',
               help="Path to msbuild executable.")
-@click.option('-c', '--clean', is_flag=True,
+@click.option('-r', '--rebuild', is_flag=True, default=False,
               help="If set, cleans project before rebuilding.")
 @click.option('--config', type=click.Path(),
               help="Config file path.")
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def build(ctx, path, configuration, msbuild_path, clean, config, debug, quiet):
+def build(ctx, path, configuration, msbuild_path, rebuild, config, debug, quiet):
     uget = UGetCli(debug, quiet)
-    return uget.create(path, configuration, msbuild_path, clean)
+    return uget.build(path, configuration, msbuild_path, rebuild)
 
 
 @ugetcli.command('create', cls=_create_command_class('config', 'path'),
