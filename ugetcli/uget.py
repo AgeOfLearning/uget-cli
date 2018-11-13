@@ -85,7 +85,7 @@ class UGetCli:
 
         unitypackage_export_root = os.path.join(unity_project_path, unitypackage_root_path_relative)
         if not os.path.exists(unitypackage_export_root):
-            os.mkdir(unitypackage_export_root)
+            os.makedirs(unitypackage_export_root)
         elif not os.path.isdir(unitypackage_export_root):
             raise IOError("Can't copy assembly into Unity Project; path is not a valid directory: {0}"
                           .format(unitypackage_export_root))
