@@ -1,36 +1,10 @@
 import os
 import json
 import click
-import csproj
-import utils
-import nuspec
-from click import BadParameter
 from uget import UGetCli
 
 
-# Click Validators
-def _validate_path_csproj(ctx, param, value):
-    """ Checks if given parameter is a path to .csproj """
-    if not csproj.CsProj.get_csproj_at_path(value):
-        raise BadParameter('{0} must be a valid path to .csproj file, or a directory containing one')
-    return value
-
-
-def _validate_path_nupkg_or_csproj(ctx, param, value):
-    """ Checks if given parameter is a path to .csproj or .nuspec """
-    if not nuspec.NuSpec.get_nuspec_at_path(value) and not csproj.CsProj.get_csproj_at_path(value):
-        raise BadParameter('{0} must be a valid path to .csproj file, .nuspec file, or a directory containing either')
-    return value
-
-
-def _validate_url_param(ctx, param, value):
-    """ Checks if parameter is a URL """
-    if utils.validate_url(value):
-        return value
-    raise BadParameter('Invalid url format')
-
-
-# Helper method for a command
+# Helper method for a command and pre-load value from the config file
 def _create_command_class(config_path_param_name, config_base_dir_param_name):
     """Creates click.Command subclass that overrides values from config file at the provided path
     :param config_path_param_name: Parameter name for config file path
@@ -62,7 +36,7 @@ def ugetcli():
 # uGet Commands
 @ugetcli.command('build', cls=_create_command_class('config', 'path'),
                  help='Builds CSharp project (.csproj)')
-@click.option('-p', '--path', type=click.Path(), default=".", callback=_validate_path_csproj,
+@click.option('-p', '--path', type=click.Path(), default=".",
               help="Path to Visual Studio project (.csproj).")
 @click.option('-c', '--configuration', type=click.Choice(['Debug', 'Release']), default='Release',
               help='Build configuration.')
@@ -82,7 +56,7 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, debug, quiet)
 
 @ugetcli.command('create', cls=_create_command_class('config', 'path'),
                  help='Creates Unity Package (.unitypackage)')
-@click.option('-p', '--path', type=click.Path(), default=".", callback=_validate_path_csproj,
+@click.option('-p', '--path', type=click.Path(), default=".",
               help="Path to Visual Studio project (.csproj).")
 @click.option('-o', '--output-dir', type=click.Path(), default='Output',
               help='Output .unitypackage directory.')
@@ -109,7 +83,7 @@ def build(ctx, path, output_dir, configuration, unity_path, unity_project_path, 
 
 @ugetcli.command('pack', cls=_create_command_class('config', 'path'),
                  help='Packs NuGet package (.nupkg) using NuGet. Includes Unity Package (.unitypackage) into it.')
-@click.option('-p', '--path', type=click.Path(), default='.', callback=_validate_path_nupkg_or_csproj,
+@click.option('-p', '--path', type=click.Path(), default='.',
               help='Path to Visual Studio project (.csproj) or .nuspec file.')
 @click.option('-o', '--output-dir', type=click.Path(), default='.',
               help='Output NuGet package directory.')
@@ -133,7 +107,7 @@ def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, co
                  help='Push uGet Package (.nupkg) to the NuGet feed.')
 @click.option('-p', '--path', type=click.Path(), default='.',
               help='Path to NuGet Package (.nupkg) or Visual Studio project.')
-@click.option('-f', '--feed', type=str, callback=_validate_url_param,
+@click.option('-f', '--feed', type=str,
               help='NuGet Feed URL')
 @click.option('-n', '--nuget-path', type=click.Path(), default=None, envvar='NUGET_PATH',
               help='Path to nuget executable.')
