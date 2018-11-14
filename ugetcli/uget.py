@@ -167,18 +167,19 @@ class UGetCli:
 
         return nuget_runner.pack(path, output_dir, configuration, unitypackage_path)
 
-    def push(self, path, feed, nuget_path, api_key):
+    def push(self, path, output_dir, feed, nuget_path, api_key):
         """
         Pushes NuGet package on to the NuGet feed.
         :param path: Path to the NuGet Package
+        :param output_dir: Output directory in which NuGet package will be searched, if it's not explicitly provided.
         :param feed: NuGet feed URI
         :param nuget_path: Path to the NuGet executable
         :param api_key: NuGet Api Key
         :return: Exit code of the NuGet push command
         """
-        nupkg_path = self._locate_nupkg_at_path(path)
+        nupkg_path = self._locate_nupkg_at_path(path, output_dir)
         nuget_path = self._locate_nuget_path(nuget_path)
-        nuget = NuGetRunner(nuget_path)
+        nuget = NuGetRunner(nuget_path, self.debug)
         return nuget.push(nupkg_path, feed, api_key)
 
     def _locate_msbuild_path(self, msbuild_path):
@@ -232,10 +233,12 @@ class UGetCli:
                 click.secho('You might need to add NuGet installation folder to your PATH variable.')
         raise click.UsageError('Failed to locate NuGet executable.')
 
-    def _locate_nupkg_at_path(self, path):
+    def _locate_nupkg_at_path(self, path, output_dir):
         """
-        Finds .nupkg file at the provided path.
-        If fails, finds .csproj and tries to locate most recent nuget package
+        Finds .nupkg file.
+        If no explicit path to the .nupkg file is provided, .csproj file will be searched for in path.
+        .csproj will be used to determine name and version of the package, while package itself will be seached
+        in the output_dir.
         """
         if path.endswith(".nupkg"):
             if not os.path.isfile(path):
@@ -247,11 +250,13 @@ class UGetCli:
         if not csproj_path:
             raise click.UsageError("Failed to find Nuget Package (.nupkg) or Visual Studio project at path " + path)
 
-        assembly_name = CsProj.get_assembly_name(path)
-        version = CsProj.get_assembly_version(path)
+        csproj = CsProj(csproj_path)
+
+        assembly_name = csproj.get_assembly_name()
+        version = csproj.get_assembly_version()
 
         nupkg_filename = "{0}.{1}.nupkg".format(assembly_name, version)
-        nupkg_path = os.path.join(os.path.dirname(path), nupkg_filename)
+        nupkg_path = os.path.join(output_dir, nupkg_filename)
 
         if not os.path.isfile(nupkg_path):
             raise click.UsageError("Failed to find Nuget Package (.nupkg) or Visual Studio project at path " + path)

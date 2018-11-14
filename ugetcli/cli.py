@@ -5,18 +5,14 @@ from uget import UGetCli
 
 
 # Helper method for a command and pre-load value from the config file
-def _create_command_class(config_path_param_name, config_base_dir_param_name):
+def _create_command_class(config_path_param_name):
     """Creates click.Command subclass that overrides values from config file at the provided path
     :param config_path_param_name: Parameter name for config file path
-    :param config_base_dir_param_name: Parameter name for base directory to which config path is relative.
     :return: Copy of UGetCommand class
     """
     class UGetCommand(click.Command):
         def invoke(self, ctx):
             config_file_path = ctx.params[config_path_param_name] or "uget.config.json"
-            config_file_base_dir = ctx.params[config_base_dir_param_name] or ""
-            if not os.path.isabs(config_file_path):
-                config_file_path = os.path.join(config_file_base_dir, config_file_path)
             if os.path.isfile(config_file_path):
                 with open(config_file_path) as f:
                     config_data = json.load(f)
@@ -34,7 +30,7 @@ def ugetcli():
 
 
 # uGet Commands
-@ugetcli.command('build', cls=_create_command_class('config', 'path'),
+@ugetcli.command('build', cls=_create_command_class('config'),
                  help='Builds CSharp project (.csproj)')
 @click.option('-p', '--path', type=click.Path(), default=".",
               help="Path to Visual Studio project (.csproj).")
@@ -54,7 +50,7 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, debug, quiet)
     return uget.build(path, configuration, msbuild_path, rebuild)
 
 
-@ugetcli.command('create', cls=_create_command_class('config', 'path'),
+@ugetcli.command('create', cls=_create_command_class('config'),
                  help='Creates Unity Package (.unitypackage)')
 @click.option('-p', '--path', type=click.Path(), default=".",
               help="Path to Visual Studio project (.csproj).")
@@ -81,7 +77,7 @@ def build(ctx, path, output_dir, configuration, unity_path, unity_project_path, 
     return uget.create(path, output_dir, configuration, unity_path, unity_project_path, root_directory, clean)
 
 
-@ugetcli.command('pack', cls=_create_command_class('config', 'path'),
+@ugetcli.command('pack', cls=_create_command_class('config'),
                  help='Packs NuGet package (.nupkg) using NuGet. Includes Unity Package (.unitypackage) into it.')
 @click.option('-p', '--path', type=click.Path(), default='.',
               help='Path to Visual Studio project (.csproj) or .nuspec file.')
@@ -103,10 +99,13 @@ def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, co
     return uget.pack(path, output_dir, nuget_path, unitypackage_path, configuration)
 
 
-@ugetcli.command('push', cls=_create_command_class('config', 'path'),
+@ugetcli.command('push', cls=_create_command_class('config'),
                  help='Push uGet Package (.nupkg) to the NuGet feed.')
 @click.option('-p', '--path', type=click.Path(), default='.',
               help='Path to NuGet Package (.nupkg) or Visual Studio project.')
+@click.option('-o', '--output-dir', type=click.Path(), default='.',
+              help='Provides directory in which Nuget Package is being looked for. '
+                   'Used only if path is a .csproj or a directory that contains one (optional).')
 @click.option('-f', '--feed', type=str,
               help='NuGet Feed URL')
 @click.option('-n', '--nuget-path', type=click.Path(), default=None, envvar='NUGET_PATH',
@@ -118,6 +117,6 @@ def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, co
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def push(ctx, path, feed, nuget_path, api_key, config, debug, quiet):
+def push(ctx, path, output_dir, feed, nuget_path, api_key, config, debug, quiet):
     uget = UGetCli(debug, quiet)
-    return uget.push(path, feed, nuget_path, api_key)
+    return uget.push(path, output_dir, feed, nuget_path, api_key)
