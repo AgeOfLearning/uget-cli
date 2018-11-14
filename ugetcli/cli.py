@@ -67,14 +67,22 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, debug, quiet)
                    "If not provided, project name is used.")
 @click.option('-c', '--clean', is_flag=True,
               help="If set, cleans other .unitypackage files with the same configuration at the output location.")
+@click.option('--unity-username', type=str, default=None, envvar='UNITY_USERNAME',
+              help='Username passed into Unity command line.')
+@click.option('--unity-password', type=str, default=None, envvar='UNITY_PASSWORD',
+              help='Username passed into Unity command line.')
+@click.option('--unity-serial', type=str, default=None, envvar='UNITY_SERIAL',
+              help='Username passed into Unity command line.')
 @click.option('--config', type=click.Path(),
               help="Config file path.")
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def build(ctx, path, output_dir, configuration, unity_path, unity_project_path, root_directory, clean, config, debug, quiet):
+def build(ctx, path, output_dir, configuration, unity_path, unity_project_path, root_directory, clean,
+          unity_username, unity_password, unity_serial, config, debug, quiet):
     uget = UGetCli(debug, quiet)
-    return uget.create(path, output_dir, configuration, unity_path, unity_project_path, root_directory, clean)
+    return uget.create(path, output_dir, configuration, unity_path, unity_project_path, root_directory, clean,
+                       unity_username, unity_password, unity_serial)
 
 
 @ugetcli.command('pack', cls=_create_command_class('config'),

@@ -38,7 +38,7 @@ class UGetCli:
         return msbuild.build(csproj_path, configuration, rebuild)
 
     def create(self, csproj_path, output_dir, configuration, unity_path, unity_project_path,
-               unitypackage_root_path_relative, clean):
+               unitypackage_root_path_relative, clean, unity_username, unity_password, unity_serial):
         """
         Creates .unitypackage that contains project assembly and assets
         :param path: Path to .csproj
@@ -48,6 +48,9 @@ class UGetCli:
         :param unity_project_path: Path to the unity project used to build .unitypackage
         :param unitypackage_root_path_relative: Root path inside a unity_project_path used to export .unitypackage
         :param clean: If set, other Unity Packages will be removed from the output folder if they match configuration
+        :param unity_username: Unity Username. Passed to Unity command line as -username
+        :param unity_password: Unity Password. Passed to Unity command line as -password
+        :param unity_serial: Unity Serial key. Passed to Unity command line as -serial
         """
         csproj = CsProj(csproj_path)
 
@@ -106,7 +109,7 @@ class UGetCli:
 
             # Export .unitypackage
             logs_dir_path = tempfile.mkdtemp()  # Temporary directory for logs will be removed when host restarts
-            unity_runner = UnityRunner(unity_path, self.debug)
+            unity_runner = UnityRunner(unity_path, self.debug, unity_username, unity_password, unity_serial)
             click.secho("Running Unity to build {0}".format(unitypackage_name))
             exit_code = unity_runner.export_unitypackage(unity_project_stage_path, unitypackage_root_path_relative, unitypackage_path, logs_dir_path)
             if exit_code != 0:

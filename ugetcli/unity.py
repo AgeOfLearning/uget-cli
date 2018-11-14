@@ -16,8 +16,11 @@ class UnityRunner:
     stdout_filename = "unity_stdout.log"
     stderr_filename = "unity_stderr.log"
 
-    def __init__(self, unity_path, debug=False):
+    def __init__(self, unity_path, unity_username, unity_password, unity_serial, debug=False):
         self.unity_path = unity_path
+        self.unity_username = unity_username
+        self.unity_password = unity_password
+        self.unity_serial = unity_serial
         self.debug = debug
 
     def export_unitypackage(self, project_path, package_root, output_path, log_directory):
@@ -33,6 +36,15 @@ class UnityRunner:
                      "-logFile", editor_log_path,
                      "-batchmode",
                      "-quit"]
+
+        if self.unity_username:
+            arguments.extend(["-username", self.unity_username])
+
+        if self.unity_password:
+            arguments.extend(["-password", self.unity_password])
+
+        if self.unity_serial:
+            arguments.extend(["-serial", self.unity_serial])
 
         return self._run_editor(arguments, stdout_log_path, stderr_log_path)
 
