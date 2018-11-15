@@ -148,22 +148,22 @@ class UGetCli:
         nuget_path = self._locate_nuget_path(nuget_path)
         nuget_runner = NuGetRunner(nuget_path, self.debug)
 
-        # Locate project name and version
-        csproj_file_path = CsProj.get_csproj_at_path(path)
-        if csproj_file_path is not None:
-            csproj = CsProj(path, self.debug)
-            package_id = csproj.get_assembly_name()
-            version = csproj.get_assembly_version()
-        else:
-            nuspec_file_path = NuSpec.get_nuspec_at_path(path)
-            if nuspec_file_path is not None:
-                nuspec = NuSpec(path, self.debug)
-                package_id = nuspec.get_package_id()
-                version = nuspec.get_package_version()
-            else:
-                raise click.UsageError("Path must be a valid path to .nuspec, .csproj, or directory containing either")
-
         if not unitypackage_path:
+            # Locate project name and version
+            csproj_file_path = CsProj.get_csproj_at_path(path)
+            if csproj_file_path is not None:
+                csproj = CsProj(path, self.debug)
+                package_id = csproj.get_assembly_name()
+                version = csproj.get_assembly_version()
+            else:
+                nuspec_file_path = NuSpec.get_nuspec_at_path(path)
+                if nuspec_file_path is not None:
+                    nuspec = NuSpec(path, self.debug)
+                    package_id = nuspec.get_package_id()
+                    version = nuspec.get_package_version()
+                else:
+                    raise click.UsageError("Path must be a valid path to .nuspec, .csproj, or directory containing either")
+
             if not package_id:
                 raise click.UsageError("Failed to identify package id.")
             if not version:

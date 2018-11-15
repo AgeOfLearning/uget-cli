@@ -92,12 +92,12 @@ def build(ctx, path, output_dir, configuration, unity_path, unity_project_path, 
                  help='Packs NuGet package (.nupkg) using NuGet. Includes Unity Package (.unitypackage) into it.')
 @click.option('-p', '--path', type=click.Path(), default='.',
               help='Path to Visual Studio project (.csproj) or .nuspec file.')
-@click.option('-o', '--output-dir', type=click.Path(), default='.',
+@click.option('-o', '--output-dir', type=click.Path(), default='Output',
               help='Output NuGet package directory.')
 @click.option('-n', '--nuget-path', type=click.Path(), default=None, envvar='NUGET_PATH',
               help='Path to NuGet executable.')
-@click.option('-u', '--unitypackage-path', type=click.File(), default=None,
-              help='Path to .unitypackage.')
+@click.option('-u', '--unitypackage-path', type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+              default=None, help='Path to .unitypackage.')
 @click.option('-c', '--configuration', type=click.Choice(['Debug', 'Release']), default='Release',
               help='Build configuration.')
 @click.option('--config', type=click.Path(),
