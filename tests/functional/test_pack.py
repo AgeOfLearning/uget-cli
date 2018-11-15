@@ -17,7 +17,7 @@ def _create_empty_file(path):
         pass
 
 
-class TestUGetCli(unittest.TestCase):
+class TestUGetCliPack(unittest.TestCase):
     """Tests for `ugetcli` package - pack command."""
     @patch('uget.CsProj')
     @patch('uget.NuGetRunner')

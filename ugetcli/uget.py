@@ -263,7 +263,7 @@ class UGetCli:
         version = csproj.get_assembly_version()
 
         nupkg_filename = "{0}.{1}.nupkg".format(assembly_name, version)
-        nupkg_path = os.path.join(output_dir, nupkg_filename)
+        nupkg_path = os.path.normpath(os.path.join(output_dir, nupkg_filename))
 
         if not os.path.isfile(nupkg_path):
             raise click.UsageError("Failed to find Nuget Package (.nupkg) or Visual Studio project at path " + path)
