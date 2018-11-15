@@ -17,5 +17,5 @@ class TestUGetCliHelp(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(cli.ugetcli, ['--help'], obj={})
         assert result.exit_code == 0
-        assert '--help' in  result.output
+        assert '--help' in result.output
         assert 'Show this message and exit.' in result.output

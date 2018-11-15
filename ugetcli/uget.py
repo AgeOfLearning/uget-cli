@@ -99,6 +99,10 @@ class UGetCli:
         # Copy unity project folder into a temporary build location
         unitypackage_name = self.UNITYPACKAGE_FORMAT.format(name=assembly_name, version=version,
                                                             configuration=configuration)
+
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
         unitypackage_path = os.path.join(output_dir, unitypackage_name)
 
         with utils.temp_dir() as temp_build_stage_dir:
@@ -109,7 +113,7 @@ class UGetCli:
 
             # Export .unitypackage
             logs_dir_path = tempfile.mkdtemp()  # Temporary directory for logs will be removed when host restarts
-            unity_runner = UnityRunner(unity_path, self.debug, unity_username, unity_password, unity_serial)
+            unity_runner = UnityRunner(unity_path, unity_username, unity_password, unity_serial, self.debug)
             click.secho("Running Unity to build {0}".format(unitypackage_name))
             exit_code = unity_runner.export_unitypackage(unity_project_stage_path, unitypackage_root_path_relative, unitypackage_path, logs_dir_path)
             if exit_code != 0:

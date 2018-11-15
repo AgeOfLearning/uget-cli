@@ -60,9 +60,9 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, debug, quiet)
               help='Build configuration.')
 @click.option('-u', '--unity-path', type=click.Path(), default=None, envvar='UNITY_PATH',
               help='Path to Unity editor executable.')
-@click.option('-t', '--unity-project-path', type=click.Path(), default=None,
+@click.option('-t', '--unity-project-path', type=click.Path(), default="UnityProject",
               help='Path to the Unity project used to build .unitypackage. Project can contain optional assets.')
-@click.option('-r', '--root-directory', type=click.Path(), default=None,
+@click.option('-r', '--root-dir', type=click.Path(), default=None,
               help="Root directory inside the Unity Project into which assembly is copied. Used to export .unitypackage"
                    "If not provided, project name is used.")
 @click.option('-c', '--clean', is_flag=True,
@@ -78,10 +78,13 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, debug, quiet)
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def build(ctx, path, output_dir, configuration, unity_path, unity_project_path, root_directory, clean,
+def build(ctx, path, output_dir, configuration, unity_path, unity_project_path, root_dir, clean,
           unity_username, unity_password, unity_serial, config, debug, quiet):
+    if not unity_path:
+        raise click.BadOptionUsage("Unity path must be present. Please use -u/--unity-path option or set UNITY_PATH "
+                                   "env variable")
     uget = UGetCli(debug, quiet)
-    return uget.create(path, output_dir, configuration, unity_path, unity_project_path, root_directory, clean,
+    return uget.create(path, output_dir, configuration, unity_path, unity_project_path, root_dir, clean,
                        unity_username, unity_password, unity_serial)
 
 

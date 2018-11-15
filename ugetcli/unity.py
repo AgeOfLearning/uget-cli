@@ -16,7 +16,7 @@ class UnityRunner:
     stdout_filename = "unity_stdout.log"
     stderr_filename = "unity_stderr.log"
 
-    def __init__(self, unity_path, unity_username, unity_password, unity_serial, debug=False):
+    def __init__(self, unity_path, unity_username=None, unity_password=None, unity_serial=None, debug=False):
         self.unity_path = unity_path
         self.unity_username = unity_username
         self.unity_password = unity_password
