@@ -63,32 +63,6 @@ class CsProj:
             version = matches[0]
             return version
 
-    def get_dependencies(self):
-        """ Returns list of dependency assemblies from the project
-        :return:list of dependencies
-        """
-        tree = ET.parse(self.path)
-        root = tree.getroot()
-
-        xml_element_item_group = "ItemGroup"
-        xml_element_reference = "Reference"
-        xml_element_hint_path = "HintPath"
-        xml_attrib_include = "Include"
-
-        dependencies = []
-
-        for item_group in root.findall(xml_element_item_group):
-            references = item_group.findall(xml_element_reference)
-            for reference in references:
-                hint_path = reference.find(xml_element_hint_path)
-                if hint_path:
-                    assembly_name = utils.get_filename(hint_path.text)
-                else:
-                    assembly_name = reference.attrib[xml_attrib_include]
-                dependencies.append(assembly_name)
-
-        return dependencies
-
     @staticmethod
     def get_csproj_at_path(path):
         """

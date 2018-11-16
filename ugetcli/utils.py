@@ -107,3 +107,8 @@ def copy_replace_directory(src_dir, dst_dir):
             if os.path.exists(dst_file):
                 os.remove(dst_file)
             shutil.copy(src_file, dst_dir)
+
+
+def create_empty_file(path):
+    with open(path, 'w'):
+        pass

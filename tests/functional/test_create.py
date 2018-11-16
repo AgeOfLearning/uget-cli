@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Functional tests for `ugetcli` package - `build` command.
-Tests functionality of the cli command with various options.
+Functional tests for `ugetcli` package - `create` command.
+Tests functionality of the cli create command with various options.
 """
 
 import os
@@ -14,11 +14,7 @@ from click.testing import CliRunner
 from unittest.mock import MagicMock, patch
 
 from ugetcli import cli
-
-
-def _create_empty_file(path):
-    with open(path, 'w'):
-        pass
+from ugetcli.utils import create_empty_file
 
 
 class TestUGetCliCreate(unittest.TestCase):
@@ -35,7 +31,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -53,8 +49,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(cli.ugetcli, ['create', '--unity-path', 'unity.exe'], obj={})
 
         assert result.exit_code == 0, result
@@ -71,7 +67,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -88,8 +84,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--path', 'custom/'], obj={})
 
         assert result.exit_code == 0, result
@@ -107,7 +103,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('out/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -124,8 +120,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--output-dir', 'out'], obj={})
 
         assert result.exit_code == 0, result
@@ -142,7 +138,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Debug.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -159,8 +155,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--configuration', 'Debug'],
                                    obj={})
 
@@ -178,7 +174,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -195,8 +191,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(
                 cli.ugetcli, ['create'], obj={})
 
@@ -214,7 +210,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'MyUnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -231,8 +227,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(
                 cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--unity-project-path', 'MyUnityProject'], obj={})
 
@@ -250,7 +246,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/MyUnityPackageRoot')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -267,8 +263,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(
                 cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--root-dir', 'MyUnityPackageRoot'], obj={})
 
@@ -287,7 +283,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -304,12 +300,12 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             os.makedirs("Output/")
-            _create_empty_file("Output/TestProject_0.1.0_Release.unitypackage")  # Should be removed
-            _create_empty_file("Output/TestProject_0.1.1_Release.unitypackage")  # Should be removed
-            _create_empty_file("Output/TestProject_0.1.0_Debug.unitypackage")  # Should NOT be removed
+            create_empty_file("Output/TestProject_0.1.0_Release.unitypackage")  # Should be removed
+            create_empty_file("Output/TestProject_0.1.1_Release.unitypackage")  # Should be removed
+            create_empty_file("Output/TestProject_0.1.0_Debug.unitypackage")  # Should NOT be removed
             result = runner.invoke(
                 cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--clean'], obj={})
 
@@ -331,7 +327,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -348,8 +344,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(
                 cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--unity-username', 'test_username'], obj={})
 
@@ -368,7 +364,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -385,8 +381,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(
                 cli.ugetcli, ['create', '--unity-path', 'unity.exe'], obj={})
 
@@ -404,7 +400,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -421,8 +417,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(
                 cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--unity-password', 'password'], obj={})
 
@@ -440,7 +436,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -457,8 +453,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(
                 cli.ugetcli, ['create', '--unity-path', 'unity.exe'], obj={})
 
@@ -476,7 +472,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -493,8 +489,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(
                 cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--unity-serial', 'myserial'], obj={})
 
@@ -512,7 +508,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -529,8 +525,8 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": 'myserial'})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(
                 cli.ugetcli, ['create', '--unity-path', 'unity.exe'], obj={})
 
@@ -548,7 +544,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert 'CustomUnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/MyUnityPackage')
             assert args[2] == os.path.normpath('CustomOutput/TestProject_1.0.0_Debug.unitypackage')
-            _create_empty_file(args[2])
+            create_empty_file(args[2])
             return 0
 
         unity_runner_instance = MagicMock()
@@ -577,10 +573,10 @@ class TestUGetCliCreate(unittest.TestCase):
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
             os.makedirs("bin/Output/Debug")
-            _create_empty_file("bin/Output/Debug/TestProject.dll")
-            _create_empty_file("bin/Output/Debug/TestProject.pdb")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
             os.makedirs("CustomOutput/")
-            _create_empty_file("CustomOutput/TestProject_0.1.0_Release.unitypackage")  # Should be removed
+            create_empty_file("CustomOutput/TestProject_0.1.0_Release.unitypackage")  # Should be removed
 
             with open('config_test.json', 'w') as f:
                 json.dump(config_data, f)

@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `ugetcli` package."""
+"""
+Functional tests for `ugetcli` package - `push` command.
+Tests functionality of the cli push command with various options.
+"""
 
 import unittest
 import os
+import json
 from click.testing import CliRunner
 from unittest.mock import MagicMock, patch
 
 from ugetcli import cli
-
-
-def _create_empty_file(path):
-    with open(path, 'w'):
-        pass
+from ugetcli.utils import create_empty_file
 
 
 class TestUGetCliPush(unittest.TestCase):
@@ -33,9 +33,9 @@ class TestUGetCliPush(unittest.TestCase):
         csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
-        runner = CliRunner(env={"NUGET_PATH": None})
+        runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            _create_empty_file("TestProject.1.2.3.nupkg")
+            create_empty_file("TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push'], obj={})
 
         assert result.exit_code == 0, result
@@ -57,9 +57,9 @@ class TestUGetCliPush(unittest.TestCase):
         csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
-        runner = CliRunner(env={"NUGET_PATH": None})
+        runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            _create_empty_file("TestProject.1.2.3.nupkg")
+            create_empty_file("TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--path', 'TestProject.csproj'], obj={})
 
         assert result.exit_code == 0, result
@@ -75,9 +75,9 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
 
-        runner = CliRunner(env={"NUGET_PATH": None})
+        runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            _create_empty_file("myproject.nupkg")
+            create_empty_file("myproject.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--path', 'myproject.nupkg'], obj={})
 
         assert result.exit_code == 0, result
@@ -99,10 +99,10 @@ class TestUGetCliPush(unittest.TestCase):
         csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
-        runner = CliRunner(env={"NUGET_PATH": None})
+        runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
             os.makedirs("MyOutput")
-            _create_empty_file("MyOutput/TestProject.1.2.3.nupkg")
+            create_empty_file("MyOutput/TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--path', 'TestProject.csproj', '--output-dir', 'MyOutput'],
                                    obj={})
 
@@ -126,9 +126,9 @@ class TestUGetCliPush(unittest.TestCase):
         csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
-        runner = CliRunner(env={"NUGET_PATH": None})
+        runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            _create_empty_file("TestProject.1.2.3.nupkg")
+            create_empty_file("TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--feed', 'http://test.com/feed'], obj={})
 
         assert result.exit_code == 0, result
@@ -151,9 +151,9 @@ class TestUGetCliPush(unittest.TestCase):
         csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
-        runner = CliRunner(env={"NUGET_PATH": None})
+        runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            _create_empty_file("TestProject.1.2.3.nupkg")
+            create_empty_file("TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--nuget-path', 'custom_nuget.exe'], obj={})
 
         assert result.exit_code == 0, result
@@ -177,9 +177,9 @@ class TestUGetCliPush(unittest.TestCase):
         csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
-        runner = CliRunner(env={"NUGET_PATH": "custom_nuget.exe"})
+        runner = CliRunner(env={"NUGET_PATH": "custom_nuget.exe", "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            _create_empty_file("TestProject.1.2.3.nupkg")
+            create_empty_file("TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push'], obj={})
 
         assert result.exit_code == 0, result
@@ -203,9 +203,9 @@ class TestUGetCliPush(unittest.TestCase):
         csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
-        runner = CliRunner(env={"NUGET_PATH": None})
+        runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            _create_empty_file("TestProject.1.2.3.nupkg")
+            create_empty_file("TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--api-key', 'myapikey'], obj={})
 
         assert result.exit_code == 0, result
@@ -230,7 +230,7 @@ class TestUGetCliPush(unittest.TestCase):
 
         runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": "myapikey"})
         with runner.isolated_filesystem():
-            _create_empty_file("TestProject.1.2.3.nupkg")
+            create_empty_file("TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push'], obj={})
 
         assert result.exit_code == 0, result
@@ -238,7 +238,39 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance.push.assert_called_with(
             os.path.normpath("TestProject.1.2.3.nupkg"), None, "myapikey")
 
+    @patch('uget.CsProj')
+    @patch('uget.NuGetRunner')
+    def test_cli_uget_push_with_config(
+        self, nuget_runner_mock, csproj_mock):
+        """Test cli: uget pack with config env variable"""
+        nuget_runner_instance = MagicMock()
+        nuget_runner_mock.return_value = nuget_runner_instance
+        nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+
+        csproj_instance = MagicMock()
+        csproj_instance.get_assembly_name.return_value = "TestProject"
+        csproj_instance.get_assembly_version.return_value = "1.2.3"
+        csproj_mock.return_value = csproj_instance
+        csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
+
+        config_data = {
+            "output_dir": "CustomOutput",
+            "feed": "http://test.com/nuget",
+            "nuget_path": "custom_nuget.exe",
+            "api_key": "myapikey123"
+        }
+
+        runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
+        with runner.isolated_filesystem():
+            with open('config_test.json', 'w') as f:
+                json.dump(config_data, f)
+            os.makedirs("CustomOutput")
+            create_empty_file("CustomOutput/TestProject.1.2.3.nupkg")
+            result = runner.invoke(cli.ugetcli, ['push', '--config', 'config_test.json'], obj={})
+
+        assert result.exit_code == 0, result
+        nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
+        nuget_runner_instance.push.assert_called_with(
+            os.path.normpath("CustomOutput/TestProject.1.2.3.nupkg"), "http://test.com/nuget", "myapikey123")
 
 
-
-# --config

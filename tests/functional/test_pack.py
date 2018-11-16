@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `ugetcli` package."""
+"""
+Functional tests for `ugetcli` package - `pack` command.
+Tests functionality of the cli pack command with various options.
+"""
 
 import unittest
 import os
@@ -10,11 +13,7 @@ from click.testing import CliRunner
 from unittest.mock import MagicMock, patch
 
 from ugetcli import cli
-
-
-def _create_empty_file(path):
-    with open(path, 'w'):
-        pass
+from ugetcli.utils import create_empty_file
 
 
 class TestUGetCliPack(unittest.TestCase):
@@ -152,7 +151,7 @@ class TestUGetCliPack(unittest.TestCase):
 
         runner = CliRunner(env={"NUGET_PATH": None})
         with runner.isolated_filesystem():
-            _create_empty_file('MyUnityPackage.unitypackage')
+            create_empty_file('MyUnityPackage.unitypackage')
             result = runner.invoke(cli.ugetcli, ['pack', '--unitypackage-path', 'MyUnityPackage.unitypackage'], obj={})
 
         assert result.exit_code == 0, result
@@ -206,7 +205,7 @@ class TestUGetCliPack(unittest.TestCase):
             with open('config_test.json', 'w') as f:
                 json.dump(config_data, f)
 
-            _create_empty_file('MyUnityPackage.unitypackage')
+            create_empty_file('MyUnityPackage.unitypackage')
             result = runner.invoke(cli.ugetcli, ['pack', '--config', 'config_test.json'], obj={})
 
         assert result.exit_code == 0, result

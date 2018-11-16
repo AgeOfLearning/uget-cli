@@ -3,7 +3,7 @@
 
 """
 Functional tests for `ugetcli` package - `build` command.
-Tests functionality of the cli command with various options.
+Tests functionality of the cli build command with various options.
 """
 
 import unittest

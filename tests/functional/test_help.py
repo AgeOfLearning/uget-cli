@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `ugetcli` package."""
+"""
+Functional tests for `ugetcli` package - `help` command.
+Tests functionality of the cli help command with various options.
+"""
 
 import unittest
 from click.testing import CliRunner

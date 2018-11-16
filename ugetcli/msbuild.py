@@ -48,7 +48,7 @@ class MsBuildRunner:
             # On windows, default msbuild locations are Visual Studio installation folder and .NET installation folder
             msbuild_search_patterns = [
                 os.environ["ProgramFiles"] + "\\Microsoft Visual Studio\\*\\Community\\MSBuild\\*\\Bin\\MSBuild.exe",
-                os.environ['WINDIR'] + "\\Microsoft.NET\\Framework\\*\\msbuild.exe"
+                os.environ['WINDIR'] + "\\Microsoft.NET\\Framework\\*\\MSBuild.exe"
             ]
             for pattern in msbuild_search_patterns:
                 locations = glob.glob(pattern)
