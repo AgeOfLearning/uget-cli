@@ -78,7 +78,7 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, debug, quiet)
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def build(ctx, path, output_dir, configuration, unity_path, unity_project_path, root_dir, clean,
+def create(ctx, path, output_dir, configuration, unity_path, unity_project_path, root_dir, clean,
           unity_username, unity_password, unity_serial, config, debug, quiet):
     if not unity_path:
         raise click.BadOptionUsage("Unity path must be present. Please use -u/--unity-path option or set UNITY_PATH "
