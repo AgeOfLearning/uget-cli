@@ -59,7 +59,7 @@ class TestUGetCliNuSpec(unittest.TestCase):
             assert nuspec.get_package_id() == "MyProject"  # Set to "MyProject" in fixture .nuspec file
 
     def test_nuspec_get_package_version(self):
-        """Test NuSpec.get_package_id """
+        """Test NuSpec.get_package_version """
         with temp_dir() as tmp_root_dir:
             nuspec_root = os.path.join(tmp_root_dir, "test")
             shutil.copytree(get_fixture_dir(), nuspec_root)
