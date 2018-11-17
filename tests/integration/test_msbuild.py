@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Integration tests for `ugetcli` package - `csproj` module.
-Tests functionality of the .csproj reader integration
+Integration tests for `ugetcli` package - `msbuild` module.
+Tests functionality of the MsBuild Runner integration
 """
 import unittest
 import os
