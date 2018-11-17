@@ -19,7 +19,7 @@ class TestUGetCliUnityRunner(unittest.TestCase):
 
     @patch('unity.Popen')
     @patch('unity.open')
-    def test_unity(self, mock_open, mock_popen):
+    def test_unity_runner_export_unitypackage(self, mock_open, mock_popen):
         """Test UnityRunner.export_unitypackage"""
         mock_open_handler = MagicMock()
         mock_open.return_value = mock_open_handler

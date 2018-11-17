@@ -23,7 +23,7 @@ class NuSpec:
         if not metadata:
             return None
         package_id = metadata.find('id')
-        if not package_id:
+        if package_id is None or not package_id.text:
             return None
         if package_id.text.startswith('$'):
             return None  # variable
@@ -37,7 +37,7 @@ class NuSpec:
         if not metadata:
             return None
         version = metadata.find('version')
-        if not version:
+        if version is None or not version.text:
             return None
         if version.text.startswith('$'):
             return None  # variable
