@@ -2,6 +2,9 @@
 Credits
 =======
 
+Age of Learning, Inc
+2018
+
 Development Lead
 ----------------
 
