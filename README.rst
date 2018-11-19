@@ -117,7 +117,7 @@ Arguments:
 Configuration file
 ------------------
 
-**--config**
+**--config-path**
 As an alternative to command line arguments, configuration file can be provided.
 By default, **uget.config.json** will be used. Config file will be searched in the execution directory.
 You can provide custom config file by passing it's path to the **--config**.
@@ -135,6 +135,16 @@ Example config file (uget.config.json):
     }
 
 You can override any command line parameter by using *snake_case* instead of *dashed-options*
+
+
+Configuration json
+------------------
+**--config**
+You can pass configuration as a raw json instead of configuration file by passing **--config**:
+
+.. code-block:: bash
+
+    uget build --config "{\"output_dir\": \"Output\"}"
 
 
 Debug Mode
