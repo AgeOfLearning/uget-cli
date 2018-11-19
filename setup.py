@@ -23,7 +23,7 @@ setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: BSD 3-Clause License',
         'Natural Language :: English',
         "Programming Language :: Python :: 2",
         'Programming Language :: Python :: 2.7',
@@ -40,7 +40,7 @@ setup(
         ],
     },
     install_requires=requirements,
-    license="MIT license",
+    license="BSD 3-Clause License",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
     keywords='ugetcli',
