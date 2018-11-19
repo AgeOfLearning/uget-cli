@@ -185,9 +185,35 @@ class TestUGetCliPack(unittest.TestCase):
             ".", "Output", "Debug", os.path.normpath("Output/TestProject_1.2.3_Debug.unitypackage"))
 
     @patch('uget.NuGetRunner')
-    def test_cli_uget_pack_with_config(
+    def test_cli_uget_pack_with_config_json(
         self, nuget_runner_mock):
-        """Test cli: uget pack with --config file"""
+        """Test cli: uget pack with --config json"""
+        nuget_runner_instance = MagicMock()
+        nuget_runner_mock.return_value = nuget_runner_instance
+        nuget_runner_mock.valid_nuget_executable.return_value = True
+        nuget_runner_mock.locate_nuget.return_value = "custom_nuget.exe"
+
+        config_data = {
+            "output_dir": "CustomOutput",
+            "nuget_path": "custom_nuget.exe",
+            "unitypackage_path": "MyUnityPackage.unitypackage",
+            "configuration": "Debug",
+        }
+
+        runner = CliRunner(env={"NUGET_PATH": None})
+        with runner.isolated_filesystem():
+            create_empty_file('MyUnityPackage.unitypackage')
+            result = runner.invoke(cli.ugetcli, ['pack', '--config', json.dumps(config_data)], obj={})
+
+        assert result.exit_code == 0, result
+        nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
+        nuget_runner_instance.pack.assert_called_with(
+            ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage")
+
+    @patch('uget.NuGetRunner')
+    def test_cli_uget_pack_with_config_file(
+        self, nuget_runner_mock):
+        """Test cli: uget pack with --config-path file"""
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.valid_nuget_executable.return_value = True
@@ -206,7 +232,7 @@ class TestUGetCliPack(unittest.TestCase):
                 json.dump(config_data, f)
 
             create_empty_file('MyUnityPackage.unitypackage')
-            result = runner.invoke(cli.ugetcli, ['pack', '--config', 'config_test.json'], obj={})
+            result = runner.invoke(cli.ugetcli, ['pack', '--config-path', 'config_test.json'], obj={})
 
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)

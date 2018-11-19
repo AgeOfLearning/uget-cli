@@ -125,6 +125,30 @@ class TestUGetCliBuild(unittest.TestCase):
 
     @patch('uget.MsBuildRunner')
     @patch('uget.CsProj.get_csproj_at_path')
+    def test_cli_uget_build_with_config_json(
+        self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
+        """Test cli: uget build with options loaded via config json"""
+        csproj_get_csproj_at_path_mock.return_value = 'TestProject.csproj'
+        msbuild_runner_instance = MagicMock()
+        msbuild_runner_instance.valid_msbuild_executable.return_value = True
+        msbuild_runner_mock.return_value = msbuild_runner_instance
+
+        runner = CliRunner(env={'MSBUILD_PATH': 'custom_msbuild_exe'})
+
+        config_data = {
+            "configuration": "Debug",
+            "msbuild_path": "msbuild_custom_exe",
+            "rebuild": True
+        }
+
+        result = runner.invoke(cli.ugetcli, ['build', '--config', json.dumps(config_data)], obj={})
+
+        assert result.exit_code == 0, result
+        msbuild_runner_mock.assert_called_with('msbuild_custom_exe', False)
+        msbuild_runner_instance.build.assert_called_with('TestProject.csproj', 'Debug', True)
+
+    @patch('uget.MsBuildRunner')
+    @patch('uget.CsProj.get_csproj_at_path')
     def test_cli_uget_build_with_config_file(
         self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
         """Test cli: uget build with options loaded via config file"""
@@ -145,7 +169,7 @@ class TestUGetCliBuild(unittest.TestCase):
             with open('config_test.json', 'w') as f:
                 json.dump(config_data, f)
 
-            result = runner.invoke(cli.ugetcli, ['build', '--config', 'config_test.json'], obj={})
+            result = runner.invoke(cli.ugetcli, ['build', '--config-path', 'config_test.json'], obj={})
 
         assert result.exit_code == 0, result
         msbuild_runner_mock.assert_called_with('msbuild_custom_exe', False)

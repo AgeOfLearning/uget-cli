@@ -5,20 +5,40 @@ from uget import UGetCli
 
 
 # Helper method for a command and pre-load value from the config file
-def _create_command_class(config_path_param_name):
+def _create_command_class(config_option_key, config_path_option_key):
     """Creates click.Command subclass that overrides values from config file at the provided path
-    :param config_path_param_name: Parameter name for config file path
+    :param config_option_key: Option key for config json
+    :param config_path_option_key: Option key for config json file path
     :return: Copy of UGetCommand class
     """
     class UGetCommand(click.Command):
         def invoke(self, ctx):
-            config_file_path = ctx.params[config_path_param_name] or "uget.config.json"
+            config_data = {}
+
+            # Read file first
+            config_file_path = ctx.params[config_path_option_key] or "uget.config.json"
             if os.path.isfile(config_file_path):
                 with open(config_file_path) as f:
-                    config_data = json.load(f)
-                    for param, value in ctx.params.items():
-                        if param in config_data:
-                            ctx.params[param] = config_data[param]
+                    try:
+                        data = json.load(f)
+                    except json.JSONDecodeError:
+                        raise click.BadOptionUsage("Failed to deserialize json from " + config_file_path)
+                    config_data.update(data)
+
+            # Read from json string
+            if config_option_key in ctx.params and ctx.params[config_option_key] is not None:
+                config_json = ctx.params[config_option_key]
+                try:
+                    data = json.loads(config_json)
+                except json.JSONDecodeError:
+                    raise click.BadOptionUsage("Failed to deserialize config json.")
+                config_data.update(data)
+
+            # Update command values
+            for param, value in ctx.params.items():
+                if param in config_data:
+                    ctx.params[param] = config_data[param]
+
             return super(UGetCommand, self).invoke(ctx)
     return UGetCommand
 
@@ -30,7 +50,7 @@ def ugetcli():
 
 
 # uGet Commands
-@ugetcli.command('build', cls=_create_command_class('config'),
+@ugetcli.command('build', cls=_create_command_class('config', 'config_path'),
                  help='Builds CSharp project (.csproj)')
 @click.option('-p', '--path', type=click.Path(), default=".",
               help="Path to Visual Studio project (.csproj).")
@@ -40,17 +60,17 @@ def ugetcli():
               help="Path to msbuild executable.")
 @click.option('-r', '--rebuild', is_flag=True, default=False,
               help="If set, cleans project before rebuilding.")
-@click.option('--config', type=click.Path(),
-              help="Config file path.")
+@click.option('--config', type=click.Path(), help="Config json.")
+@click.option('--config-path', type=str, help="Config json.")
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def build(ctx, path, configuration, msbuild_path, rebuild, config, debug, quiet):
+def build(ctx, path, configuration, msbuild_path, rebuild, config, config_path, debug, quiet):
     uget = UGetCli(debug, quiet)
     return uget.build(path, configuration, msbuild_path, rebuild)
 
 
-@ugetcli.command('create', cls=_create_command_class('config'),
+@ugetcli.command('create', cls=_create_command_class('config', 'config_path'),
                  help='Creates Unity Package (.unitypackage)')
 @click.option('-p', '--path', type=click.Path(), default=".",
               help="Path to Visual Studio project (.csproj).")
@@ -73,13 +93,13 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, debug, quiet)
               help='Username passed into Unity command line.')
 @click.option('--unity-serial', type=str, default=None, envvar='UNITY_SERIAL',
               help='Username passed into Unity command line.')
-@click.option('--config', type=click.Path(),
-              help="Config file path.")
+@click.option('--config', type=click.Path(), help="Config json.")
+@click.option('--config-path', type=str, help="Config json.")
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
 def create(ctx, path, output_dir, configuration, unity_path, unity_project_path, root_dir, clean,
-          unity_username, unity_password, unity_serial, config, debug, quiet):
+          unity_username, unity_password, unity_serial, config, config_path, debug, quiet):
     if not unity_path:
         raise click.BadOptionUsage("Unity path must be present. Please use -u/--unity-path option or set UNITY_PATH "
                                    "env variable")
@@ -88,7 +108,7 @@ def create(ctx, path, output_dir, configuration, unity_path, unity_project_path,
                        unity_username, unity_password, unity_serial)
 
 
-@ugetcli.command('pack', cls=_create_command_class('config'),
+@ugetcli.command('pack', cls=_create_command_class('config', 'config_path'),
                  help='Packs NuGet package (.nupkg) using NuGet. Includes Unity Package (.unitypackage) into it.')
 @click.option('-p', '--path', type=click.Path(), default='.',
               help='Path to Visual Studio project (.csproj) or .nuspec file.')
@@ -100,17 +120,17 @@ def create(ctx, path, output_dir, configuration, unity_path, unity_project_path,
               default=None, help='Path to .unitypackage.')
 @click.option('-c', '--configuration', type=click.Choice(['Debug', 'Release']), default='Release',
               help='Build configuration.')
-@click.option('--config', type=click.Path(),
-              help="Config file path.")
+@click.option('--config', type=click.Path(), help="Config json.")
+@click.option('--config-path', type=str, help="Config json.")
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, config, debug, quiet):
+def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, config, config_path, debug, quiet):
     uget = UGetCli(debug, quiet)
     return uget.pack(path, output_dir, nuget_path, unitypackage_path, configuration)
 
 
-@ugetcli.command('push', cls=_create_command_class('config'),
+@ugetcli.command('push', cls=_create_command_class('config', 'config_path'),
                  help='Push uGet Package (.nupkg) to the NuGet feed.')
 @click.option('-p', '--path', type=click.Path(), default='.',
               help='Path to NuGet Package (.nupkg) or Visual Studio project.')
@@ -123,11 +143,11 @@ def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, co
               help='Path to nuget executable.')
 @click.option('-a', '--api-key', type=str, default=None, envvar='NUGET_API_KEY',
               help='NuGet Api Key.')
-@click.option('--config', type=click.Path(),
-              help="Config file path.")
+@click.option('--config', type=click.Path(), help="Config json.")
+@click.option('--config-path', type=str, help="Config json.")
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def push(ctx, path, output_dir, feed, nuget_path, api_key, config, debug, quiet):
+def push(ctx, path, output_dir, feed, nuget_path, api_key, config, config_path, debug, quiet):
     uget = UGetCli(debug, quiet)
     return uget.push(path, output_dir, feed, nuget_path, api_key)

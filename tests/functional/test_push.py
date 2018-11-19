@@ -240,9 +240,44 @@ class TestUGetCliPush(unittest.TestCase):
 
     @patch('uget.CsProj')
     @patch('uget.NuGetRunner')
-    def test_cli_uget_push_with_config(
+    def test_cli_uget_push_with_config_json(
         self, nuget_runner_mock, csproj_mock):
-        """Test cli: uget pack with config env variable"""
+        """Test cli: uget pack with config json"""
+        nuget_runner_instance = MagicMock()
+        nuget_runner_mock.return_value = nuget_runner_instance
+        nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+
+        csproj_instance = MagicMock()
+        csproj_instance.get_assembly_name.return_value = "TestProject"
+        csproj_instance.get_assembly_version.return_value = "1.2.3"
+        csproj_mock.return_value = csproj_instance
+        csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
+
+        config_data = {
+            "output_dir": "CustomOutput",
+            "feed": "http://test.com/nuget",
+            "nuget_path": "custom_nuget.exe",
+            "api_key": "myapikey123"
+        }
+
+        runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
+        with runner.isolated_filesystem():
+            os.makedirs("CustomOutput")
+            create_empty_file("CustomOutput/TestProject.1.2.3.nupkg")
+            result = runner.invoke(cli.ugetcli, ['push', '--config', json.dumps(config_data)], obj={})
+
+        assert result.exit_code == 0, result
+        nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
+        nuget_runner_instance.push.assert_called_with(
+            os.path.normpath("CustomOutput/TestProject.1.2.3.nupkg"), "http://test.com/nuget", "myapikey123")
+
+
+
+    @patch('uget.CsProj')
+    @patch('uget.NuGetRunner')
+    def test_cli_uget_push_with_config_file(
+        self, nuget_runner_mock, csproj_mock):
+        """Test cli: uget pack with config file"""
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
@@ -266,7 +301,7 @@ class TestUGetCliPush(unittest.TestCase):
                 json.dump(config_data, f)
             os.makedirs("CustomOutput")
             create_empty_file("CustomOutput/TestProject.1.2.3.nupkg")
-            result = runner.invoke(cli.ugetcli, ['push', '--config', 'config_test.json'], obj={})
+            result = runner.invoke(cli.ugetcli, ['push', '--config-path', 'config_test.json'], obj={})
 
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)

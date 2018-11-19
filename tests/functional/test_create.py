@@ -535,6 +535,60 @@ class TestUGetCliCreate(unittest.TestCase):
 
     @patch('uget.CsProj')
     @patch('uget.UnityRunner')
+    def test_cli_uget_create_with_config_json(
+        self, unity_runner_mock, csproj_mock):
+        """Test cli: uget create with options loaded via config json"""
+
+        # Mock running Unity to export unity package
+        def export_unitypackage_mock(*args, **kwargs):
+            assert 'CustomUnityProject' in args[0]  # In temp folder
+            assert args[1] == os.path.normpath('Assets/MyUnityPackage')
+            assert args[2] == os.path.normpath('CustomOutput/TestProject_1.0.0_Debug.unitypackage')
+            create_empty_file(args[2])
+            return 0
+
+        unity_runner_instance = MagicMock()
+        unity_runner_instance.export_unitypackage = export_unitypackage_mock
+        unity_runner_mock.return_value = unity_runner_instance
+
+        csproj_instance = MagicMock()
+        csproj_instance.get_assembly_name.return_value = "TestProject"
+        csproj_instance.get_assembly_version.return_value = "1.0.0"
+        csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_mock.return_value = csproj_instance
+
+        config_data = {
+            "output_dir": "CustomOutput",
+            "configuration": "Debug",
+            "unity_path": "custom_unity.exe",
+            "unity_project_path": "CustomUnityProject",
+            "root_dir": "MyUnityPackage",
+            "clean": True,
+            "unity_username": "my_username",
+            "unity_password": "my_password",
+            "unity_serial": "my_serial"
+        }
+
+        runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
+                                "UNITY_SERIAL": None})
+        with runner.isolated_filesystem():
+            os.makedirs("bin/Output/Debug")
+            create_empty_file("bin/Output/Debug/TestProject.dll")
+            create_empty_file("bin/Output/Debug/TestProject.pdb")
+            os.makedirs("CustomOutput/")
+            create_empty_file("CustomOutput/TestProject_0.1.0_Release.unitypackage")  # Should be removed
+
+            result = runner.invoke(
+                cli.ugetcli, ['create', '--config', json.dumps(config_data)], obj={})
+
+            assert not os.path.isfile("Output/TestProject_0.1.0_Release.unitypackage")
+
+        assert result.exit_code == 0, result
+        unity_runner_mock.assert_called_with('custom_unity.exe', "my_username", "my_password", "my_serial", False)
+
+
+    @patch('uget.CsProj')
+    @patch('uget.UnityRunner')
     def test_cli_uget_create_with_config_file(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with options loaded via config file"""
@@ -582,7 +636,7 @@ class TestUGetCliCreate(unittest.TestCase):
                 json.dump(config_data, f)
 
             result = runner.invoke(
-                cli.ugetcli, ['create', '--config', 'config_test.json'], obj={})
+                cli.ugetcli, ['create', '--config-path', 'config_test.json'], obj={})
 
             assert not os.path.isfile("Output/TestProject_0.1.0_Release.unitypackage")
 
