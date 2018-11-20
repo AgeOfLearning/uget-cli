@@ -22,7 +22,7 @@ deploy:
   distributions: sdist bdist_wheel
   user: leonidumanskiyaofl
   password:
-    secure: PLEASE_REPLACE_ME
+    secure: 3wciii+mU/kdcrGrGghvESN0Co0XHZGc5zvW3bQINNIyFjkzCTaBrskFVo+MUd/4KE+lPdsyaM8cmz3hAcPJPx+CGQGhRbjwm2AndO/FpdDogBfVBTmfT6Emb2U5BiMoIUED7PI547POx1vtFvSQs0Gi4TqQg+HgpZDNTrDcFVFm7JUlWzOBrKkH6ECEC55x3hj+srvpZKXgidKp9u4c2CxNCHZoXeRAuhDxUW9z3TjAiHyD/k5GsZ7OZYrjEAyDsw5bn05HUpYryaoJfrSU6MDwb5KP6V7UVpTrnmvwxztyaYm/A+dwmkK+n1ao7N/xFtUbcVodZekCJt86u32ld2qCgKqXUKEM9qMQggqufwa7g7GXAxtjJAtl07WjYt6wN0+ni8ivPD99Y5msVWsOKSP5/VDHZsrfjUSYZUhgBJIQANi8rnb5APPnkQCaQgaxGf5uw03ZyT6TKRfVWNQT7iLdP6+uoajm9dqYHwQmTVEbCVSmEUHAQE9XriTBkY6HVeJOYlJJawyVZPb5JaUFEuBaXY2XPibFmHVUc68DkuEwsp/QhVcOUAP6jZarMFV85xyaTDlQQxtwRiML+EvpivUhqnJgDufCdpMXvYxdNe6QsqqoOqaPQagr+IFlkKYvGP+wCtBE/BVp1y1RKJBimMB/NInfjqx6GOgVfVmkGxw=
   on:
     tags: true
     repo: AgeOfLearning/ugetcli
