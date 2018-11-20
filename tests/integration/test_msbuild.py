@@ -9,6 +9,7 @@ import unittest
 import os
 from mock import MagicMock, patch
 
+
 from ugetcli.utils import create_empty_file, temp_dir, escape_exe_path
 from ugetcli.msbuild import MsBuildRunner
 
@@ -25,7 +26,8 @@ class TestUGetCliMSbuild(unittest.TestCase):
         vs_msbuild_dir = os.path.normpath("Microsoft Visual Studio\\1.0\\Community\\MSBuild\\1.0\\Bin\\")
         msbuild_name = "MSBuild.exe"
         with temp_dir() as tmp_root_dir:
-            with patch.dict(os.environ, {'ProgramFiles': tmp_root_dir, 'WINDIR': tmp_root_dir}, clear=True):
+            from ugetcli import msbuild
+            with patch.dict(msbuild.os.environ, {'ProgramFiles': tmp_root_dir, 'WINDIR': tmp_root_dir}, clear=True):
                 msbuild_dir_path = os.path.join(tmp_root_dir, vs_msbuild_dir)
                 os.makedirs(msbuild_dir_path)
                 msbuild_path = os.path.join(msbuild_dir_path, msbuild_name)
@@ -41,7 +43,8 @@ class TestUGetCliMSbuild(unittest.TestCase):
         vs_msbuild_dir = os.path.normpath("Microsoft.NET\\Framework\\1.0\\")
         msbuild_name = "MSBuild.exe"
         with temp_dir() as tmp_root_dir:
-            with patch.dict(os.environ, {'ProgramFiles': tmp_root_dir, 'WINDIR': tmp_root_dir}, clear=True):
+            from ugetcli import msbuild
+            with patch.dict(msbuild.os.environ, {'ProgramFiles': tmp_root_dir, 'WINDIR': tmp_root_dir}, clear=True):
                 msbuild_dir_path = os.path.join(tmp_root_dir, vs_msbuild_dir)
                 os.makedirs(msbuild_dir_path)
                 msbuild_path = os.path.join(msbuild_dir_path, msbuild_name)
