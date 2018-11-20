@@ -9,7 +9,6 @@ Tests functionality of the cli create command with various options.
 import os
 import unittest
 import json
-import uget
 from click.testing import CliRunner
 from unittest.mock import MagicMock, patch
 

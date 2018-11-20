@@ -7,10 +7,8 @@ Tests functionality of the utils helper module
 """
 import unittest
 import os
-import shutil
-from unittest.mock import MagicMock, patch
 
-from ugetcli.utils import create_empty_file, temp_dir, validate_url, copy_replace_directory
+from ugetcli.utils import temp_dir, validate_url, copy_replace_directory
 
 
 class TestUGetCliUtils(unittest.TestCase):

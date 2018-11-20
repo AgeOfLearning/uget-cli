@@ -10,7 +10,7 @@ import os
 import shutil
 
 from ugetcli.utils import create_empty_file, temp_dir
-from csproj import CsProj
+from ugetcli.csproj import CsProj
 
 _FIXTURE_DIR = "_fixtures/csproj/test_csproj/"
 _TEST_CSPROJ = "MyProject.csproj"

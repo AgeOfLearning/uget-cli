@@ -7,11 +7,10 @@ Tests functionality of the Unity Runner integration
 """
 import unittest
 import os
-import shutil
 from unittest.mock import MagicMock, patch
 
-from ugetcli.utils import create_empty_file, temp_dir
-from unity import UnityRunner
+from ugetcli.utils import temp_dir
+from ugetcli.unity import UnityRunner
 
 
 class TestUGetCliUnityRunner(unittest.TestCase):

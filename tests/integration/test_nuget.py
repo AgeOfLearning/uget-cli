@@ -7,11 +7,9 @@ Tests functionality of the NuGet Runner integration
 """
 import unittest
 import os
-import shutil
 from unittest.mock import MagicMock, patch
 
-from ugetcli.utils import create_empty_file, temp_dir
-from nuget import NuGetRunner
+from ugetcli.nuget import NuGetRunner
 
 
 class TestUGetCliNuGetRunner(unittest.TestCase):

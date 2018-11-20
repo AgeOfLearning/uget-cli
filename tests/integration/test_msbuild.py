@@ -7,11 +7,10 @@ Tests functionality of the MsBuild Runner integration
 """
 import unittest
 import os
-import shutil
 from unittest.mock import MagicMock, patch
 
 from ugetcli.utils import create_empty_file, temp_dir, escape_exe_path
-from msbuild import MsBuildRunner
+from ugetcli.msbuild import MsBuildRunner
 
 
 class TestUGetCliMSbuild(unittest.TestCase):

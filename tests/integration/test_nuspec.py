@@ -8,10 +8,9 @@ Tests functionality of the NuSpec helper integration
 import unittest
 import os
 import shutil
-from unittest.mock import MagicMock, patch
 
-from ugetcli.utils import create_empty_file, temp_dir
-from nuspec import NuSpec
+from ugetcli.utils import temp_dir
+from ugetcli.nuspec import NuSpec
 
 
 _FIXTURE_DIR = "_fixtures/nuspec/test_nuspec/"
