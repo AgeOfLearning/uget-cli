@@ -70,5 +70,5 @@ class MsBuildRunner:
         with open(os.devnull, "w") as devnull:
             try:
                 return call(escape_exe_path(msbuild_path) + " /?", shell=True, stderr=devnull, stdout=devnull) == 0
-            except FileNotFoundError:
+            except IOError:
                 return False

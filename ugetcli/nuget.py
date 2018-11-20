@@ -76,5 +76,6 @@ class NuGetRunner:
         Example: Property=Value;Property2=Value2
         """
         properties_strings = [str(k) + "=" + str(v) for (k, v) in properties.items()]  # key=value
-        properties_joined = ";".join(properties_strings)  # key=value;key2=value2
+        # Sorted is used to preserve consistency between python 2.7 and 3.6, mainly for unit testing purposes
+        properties_joined = ";".join(sorted(properties_strings))  # key=value;key2=value2
         return properties_joined

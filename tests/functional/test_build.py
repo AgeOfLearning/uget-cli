@@ -17,8 +17,8 @@ from ugetcli import cli
 class TestUGetCliBuild(unittest.TestCase):
     """Functional Tests for `ugetcli` package - build command."""
 
-    @patch('uget.MsBuildRunner')
-    @patch('uget.CsProj.get_csproj_at_path')
+    @patch('ugetcli.uget.MsBuildRunner')
+    @patch('ugetcli.uget.CsProj.get_csproj_at_path')
     def test_cli_uget_build(
         self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
         """Test cli: uget build with path containing valid csproj"""
@@ -35,8 +35,8 @@ class TestUGetCliBuild(unittest.TestCase):
         msbuild_runner_mock.assert_called_with('msbuild', False)
         msbuild_runner_instance.build.assert_called_with('TestProject.csproj', 'Release', False)
 
-    @patch('uget.MsBuildRunner')
-    @patch('uget.CsProj.get_csproj_at_path')
+    @patch('ugetcli.uget.MsBuildRunner')
+    @patch('ugetcli.uget.CsProj.get_csproj_at_path')
     def test_cli_uget_build_with_path_directory(
         self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
         """Test cli: uget build with path being a directory containing valid csproj"""
@@ -54,8 +54,8 @@ class TestUGetCliBuild(unittest.TestCase):
         msbuild_runner_mock.assert_called_with('custom_msbuild_exe', False)
         msbuild_runner_instance.build.assert_called_with('TestProject.csproj', 'Release', False)
 
-    @patch('uget.MsBuildRunner')
-    @patch('uget.CsProj.get_csproj_at_path')
+    @patch('ugetcli.uget.MsBuildRunner')
+    @patch('ugetcli.uget.CsProj.get_csproj_at_path')
     def test_cli_uget_build_with_configuration(
         self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
         """Test cli: uget build with --configuration"""
@@ -71,8 +71,8 @@ class TestUGetCliBuild(unittest.TestCase):
         msbuild_runner_mock.assert_called_with('custom_msbuild_exe', False)
         msbuild_runner_instance.build.assert_called_with('TestProject.csproj', 'Debug', False)
 
-    @patch('uget.MsBuildRunner')
-    @patch('uget.CsProj.get_csproj_at_path')
+    @patch('ugetcli.uget.MsBuildRunner')
+    @patch('ugetcli.uget.CsProj.get_csproj_at_path')
     def test_cli_uget_build_with_msbuild_executable(
         self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
         """Test cli: uget build with --msbuild-path"""
@@ -88,8 +88,8 @@ class TestUGetCliBuild(unittest.TestCase):
         msbuild_runner_mock.assert_called_with('custom_msbuild_exe', False)
         msbuild_runner_instance.build.assert_called_with('TestProject.csproj', 'Release', False)
 
-    @patch('uget.MsBuildRunner')
-    @patch('uget.CsProj.get_csproj_at_path')
+    @patch('ugetcli.uget.MsBuildRunner')
+    @patch('ugetcli.uget.CsProj.get_csproj_at_path')
     def test_cli_uget_build_with_custom_msbuild_env(
         self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
         """Test cli: uget build with MSBUILD_PATH in env"""
@@ -105,8 +105,8 @@ class TestUGetCliBuild(unittest.TestCase):
         msbuild_runner_mock.assert_called_with('custom_msbuild_exe', False)
         msbuild_runner_instance.build.assert_called_with('TestProject.csproj', 'Release', False)
 
-    @patch('uget.MsBuildRunner')
-    @patch('uget.CsProj.get_csproj_at_path')
+    @patch('ugetcli.uget.MsBuildRunner')
+    @patch('ugetcli.uget.CsProj.get_csproj_at_path')
     def test_cli_uget_build_with_rebuild(
         self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
         """Test cli: uget build with --rebuild"""
@@ -122,8 +122,8 @@ class TestUGetCliBuild(unittest.TestCase):
         msbuild_runner_mock.assert_called_with('custom_msbuild_exe', False)
         msbuild_runner_instance.build.assert_called_with('TestProject.csproj', 'Release', True)
 
-    @patch('uget.MsBuildRunner')
-    @patch('uget.CsProj.get_csproj_at_path')
+    @patch('ugetcli.uget.MsBuildRunner')
+    @patch('ugetcli.uget.CsProj.get_csproj_at_path')
     def test_cli_uget_build_with_config_json(
         self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
         """Test cli: uget build with options loaded via config json"""
@@ -146,8 +146,8 @@ class TestUGetCliBuild(unittest.TestCase):
         msbuild_runner_mock.assert_called_with('msbuild_custom_exe', False)
         msbuild_runner_instance.build.assert_called_with('TestProject.csproj', 'Debug', True)
 
-    @patch('uget.MsBuildRunner')
-    @patch('uget.CsProj.get_csproj_at_path')
+    @patch('ugetcli.uget.MsBuildRunner')
+    @patch('ugetcli.uget.CsProj.get_csproj_at_path')
     def test_cli_uget_build_with_config_file(
         self, csproj_get_csproj_at_path_mock, msbuild_runner_mock):
         """Test cli: uget build with options loaded via config file"""

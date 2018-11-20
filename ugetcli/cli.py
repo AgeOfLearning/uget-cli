@@ -21,8 +21,8 @@ def _create_command_class(config_option_key, config_path_option_key):
                 with open(config_file_path) as f:
                     try:
                         data = json.load(f)
-                    except json.JSONDecodeError:
-                        raise click.BadOptionUsage("Failed to deserialize json from " + config_file_path)
+                    except ValueError:
+                        raise click.BadOptionUsage(config_option_key, "Failed to deserialize json from " + config_file_path)
                     config_data.update(data)
 
             # Read from json string
@@ -30,8 +30,8 @@ def _create_command_class(config_option_key, config_path_option_key):
                 config_json = ctx.params[config_option_key]
                 try:
                     data = json.loads(config_json)
-                except json.JSONDecodeError:
-                    raise click.BadOptionUsage("Failed to deserialize config json.")
+                except ValueError:
+                    raise click.BadOptionUsage(config_option_key, "Failed to deserialize config json.")
                 config_data.update(data)
 
             # Update command values

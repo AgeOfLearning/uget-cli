@@ -18,8 +18,8 @@ from ugetcli.utils import create_empty_file
 
 class TestUGetCliPack(unittest.TestCase):
     """Tests for `ugetcli` package - pack command."""
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_path_containing_csproj(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with path containing a csproj"""
@@ -42,8 +42,8 @@ class TestUGetCliPack(unittest.TestCase):
         nuget_runner_instance.pack.assert_called_with(
             ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"))
 
-    @patch('uget.NuSpec')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.NuSpec')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_path_containing_nuspec(
         self, nuget_runner_mock, nuspec_mock):
         """Test cli: uget pack with path containing a csproj"""
@@ -66,8 +66,8 @@ class TestUGetCliPack(unittest.TestCase):
         nuget_runner_instance.pack.assert_called_with(
             ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"))
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_output_dir(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with output dir containing a csproj"""
@@ -90,8 +90,8 @@ class TestUGetCliPack(unittest.TestCase):
         nuget_runner_instance.pack.assert_called_with(
             ".", "MyOutput", "Release", os.path.normpath("MyOutput/TestProject_1.2.3_Release.unitypackage"))
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_nuget_path(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with --nuget-path"""
@@ -115,8 +115,8 @@ class TestUGetCliPack(unittest.TestCase):
             ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"))
         nuget_runner_mock.valid_nuget_executable.assert_called_with("custom_nuget.exe")
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_nuget_path_env(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack NUGET_PATH env variable"""
@@ -140,7 +140,7 @@ class TestUGetCliPack(unittest.TestCase):
             ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"))
         nuget_runner_mock.valid_nuget_executable.assert_called_with("custom_nuget.exe")
 
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_unitypackage_path(
         self, nuget_runner_mock):
         """Test cli: uget pack with --unitypackage-path"""
@@ -159,8 +159,8 @@ class TestUGetCliPack(unittest.TestCase):
         nuget_runner_instance.pack.assert_called_with(
             ".", "Output", "Release", "MyUnityPackage.unitypackage")
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_configuration(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with --configuration"""
@@ -184,7 +184,7 @@ class TestUGetCliPack(unittest.TestCase):
         nuget_runner_instance.pack.assert_called_with(
             ".", "Output", "Debug", os.path.normpath("Output/TestProject_1.2.3_Debug.unitypackage"))
 
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_config_json(
         self, nuget_runner_mock):
         """Test cli: uget pack with --config json"""
@@ -210,7 +210,7 @@ class TestUGetCliPack(unittest.TestCase):
         nuget_runner_instance.pack.assert_called_with(
             ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage")
 
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_config_file(
         self, nuget_runner_mock):
         """Test cli: uget pack with --config-path file"""

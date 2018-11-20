@@ -18,8 +18,8 @@ from ugetcli.utils import create_empty_file
 
 class TestUGetCliPush(unittest.TestCase):
     """Tests for `ugetcli` package - pack command."""
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with default values when path contains .csproj"""
@@ -42,8 +42,8 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.push.assert_called_with(os.path.normpath("TestProject.1.2.3.nupkg"), None, None)
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_path_csproj(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with default values when path directly points to .csproj"""
@@ -67,7 +67,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance.push.assert_called_with(os.path.normpath("TestProject.1.2.3.nupkg"), None, None)
         csproj_mock.get_csproj_at_path.assert_called_with('TestProject.csproj')
 
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_path_nupkg(
         self, nuget_runner_mock):
         """Test cli: uget pack with default values when path points to a .nupkg file"""
@@ -84,8 +84,8 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.push.assert_called_with(os.path.normpath("myproject.nupkg"), None, None)
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_path_csproj_with_output_dir(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with default values when path directly points to .csproj and --output-dir is set"""
@@ -111,8 +111,8 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance.push.assert_called_with(os.path.normpath("MyOutput/TestProject.1.2.3.nupkg"), None, None)
         csproj_mock.get_csproj_at_path.assert_called_with('TestProject.csproj')
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_with_feed(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with --feed"""
@@ -136,8 +136,8 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance.push.assert_called_with(
             os.path.normpath("TestProject.1.2.3.nupkg"), 'http://test.com/feed', None)
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_with_nuget_path(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with --nuget-path"""
@@ -162,8 +162,8 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance.push.assert_called_with(
             os.path.normpath("TestProject.1.2.3.nupkg"), None, None)
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_with_nuget_path(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with NUGET_PATH env variable set"""
@@ -188,8 +188,8 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance.push.assert_called_with(
             os.path.normpath("TestProject.1.2.3.nupkg"), None, None)
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_with_api_key(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with --api-key"""
@@ -213,8 +213,8 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance.push.assert_called_with(
             os.path.normpath("TestProject.1.2.3.nupkg"), None, "myapikey")
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_with_api_key_env(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with API_KEY env variable"""
@@ -238,8 +238,8 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance.push.assert_called_with(
             os.path.normpath("TestProject.1.2.3.nupkg"), None, "myapikey")
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_with_config_json(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with config json"""
@@ -273,8 +273,8 @@ class TestUGetCliPush(unittest.TestCase):
 
 
 
-    @patch('uget.CsProj')
-    @patch('uget.NuGetRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_push_with_config_file(
         self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with config file"""

@@ -15,7 +15,7 @@ from ugetcli.nuget import NuGetRunner
 class TestUGetCliNuGetRunner(unittest.TestCase):
     """Tests for `ugetcli` package - `nuget` module"""
 
-    @patch('nuget.call')
+    @patch('ugetcli.nuget.call')
     def test_nuget_runner_locate_nuget(self, mock_call):
         """Test NuGetRunner.locate_nuget """
         mock_call.return_value = 0
@@ -43,7 +43,7 @@ class TestUGetCliNuGetRunner(unittest.TestCase):
         mock_popen.return_value = mock_process
 
         expected_command_str = "nuget.exe pack TestProject.csproj -OutputDirectory Output " \
-                               "-Properties unityPackagePath=TestProject.1.0.0.unitypackage;Configuration=Debug " \
+                               "-Properties Configuration=Debug;unityPackagePath=TestProject.1.0.0.unitypackage " \
                                "-Verbosity normal"
 
         nuget_runner = NuGetRunner("nuget.exe")

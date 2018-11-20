@@ -19,8 +19,8 @@ from ugetcli.utils import create_empty_file
 class TestUGetCliCreate(unittest.TestCase):
     """Functional Tests for `ugetcli` package - `create` command."""
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with default options"""
@@ -55,8 +55,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_path(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --path option"""
@@ -91,8 +91,8 @@ class TestUGetCliCreate(unittest.TestCase):
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
         csproj_mock.assert_called_with('custom/')
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_output_dir(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --output-dir option"""
@@ -126,8 +126,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_configuration(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --configuration option"""
@@ -162,8 +162,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_unity_path_env(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with UNITY_PATH set inside env variable"""
@@ -198,8 +198,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('custom_unity.exe', None, None, None, False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_unity_project_path(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --unity-project-path"""
@@ -234,8 +234,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_root_directory(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --root-dir"""
@@ -271,8 +271,8 @@ class TestUGetCliCreate(unittest.TestCase):
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
 
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_clean(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --clean"""
@@ -315,8 +315,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_unity_username(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --unity-username"""
@@ -352,8 +352,8 @@ class TestUGetCliCreate(unittest.TestCase):
         unity_runner_mock.assert_called_with('unity.exe', 'test_username', None, None, False)
 
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_unity_username_env(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with UNITY_USERNAME env variable"""
@@ -388,8 +388,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', 'test_username1', None, None, False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_unity_password(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --unity-password"""
@@ -424,8 +424,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, 'password', None, False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_unity_password_env(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with UNITY_PASSWORD env variable"""
@@ -460,8 +460,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, 'password', None, False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_unity_serial(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --unity-serial"""
@@ -496,8 +496,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, 'myserial', False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_unity_serial_env(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with UNITY_SERIAL env variable"""
@@ -532,8 +532,8 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, 'myserial', False)
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_config_json(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with options loaded via config json"""
@@ -586,8 +586,8 @@ class TestUGetCliCreate(unittest.TestCase):
         unity_runner_mock.assert_called_with('custom_unity.exe', "my_username", "my_password", "my_serial", False)
 
 
-    @patch('uget.CsProj')
-    @patch('uget.UnityRunner')
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
     def test_cli_uget_create_with_config_file(
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with options loaded via config file"""

@@ -14,7 +14,7 @@ class NuSpec:
     def __init__(self, path, debug=False):
         self.path = NuSpec.get_nuspec_at_path(path)
         if not self.path:
-            raise FileNotFoundError("Failed to locate .nuspec file at path " + path)
+            raise IOError("Failed to locate .nuspec file at path " + path)
         self.debug = debug
 
     def get_package_id(self):

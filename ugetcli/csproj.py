@@ -20,7 +20,7 @@ class CsProj:
     def __init__(self, path, debug=False):
         self.path = CsProj.get_csproj_at_path(path)
         if self.path is None:
-            raise FileNotFoundError("Failed to locate .csproj at path: " + path)
+            raise IOError("Failed to locate .csproj at path: " + path)
 
         self.debug = debug
 
