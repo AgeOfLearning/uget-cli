@@ -173,3 +173,4 @@ class TestUGetCliBuild(unittest.TestCase):
         assert result.exit_code == 0, result
         msbuild_runner_mock.assert_called_with('msbuild_custom_exe', False)
         msbuild_runner_instance.build.assert_called_with('TestProject.csproj', 'Debug', True)
+

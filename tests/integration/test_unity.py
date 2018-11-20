@@ -16,8 +16,8 @@ from ugetcli.unity import UnityRunner
 class TestUGetCliUnityRunner(unittest.TestCase):
     """Tests for `ugetcli` package - `unity` module"""
 
-    @patch('unity.Popen')
-    @patch('unity.open')
+    @patch('ugetcli.unity.Popen')
+    @patch('ugetcli.unity.open')
     def test_unity_runner_export_unitypackage(self, mock_open, mock_popen):
         """Test UnityRunner.export_unitypackage"""
         mock_open_handler = MagicMock()

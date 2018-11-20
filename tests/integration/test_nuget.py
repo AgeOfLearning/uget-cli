@@ -21,9 +21,9 @@ class TestUGetCliNuGetRunner(unittest.TestCase):
         mock_call.return_value = 0
         assert NuGetRunner.locate_nuget() == "nuget"
 
-    @patch('nuget.escape_exe_path')
-    @patch('nuget.open')
-    @patch('nuget.call')
+    @patch('ugetcli.nuget.escape_exe_path')
+    @patch('ugetcli.nuget.open')
+    @patch('ugetcli.nuget.call')
     def test_nuget_runner_valid_nuget_executable(self, mock_call, mock_open, mock_escape_exe_path):
         """Test NuGetRunner.valid_nuget_executable """
         mock_call.return_value = 0
@@ -35,7 +35,7 @@ class TestUGetCliNuGetRunner(unittest.TestCase):
             assert NuGetRunner.valid_nuget_executable("nuget.exe")
             mock_call.assert_called_with("nuget.exe help", shell=True, stderr=devnull, stdout=devnull)
 
-    @patch('nuget.Popen')
+    @patch('ugetcli.nuget.Popen')
     def test_nuget_runner_pack(self, mock_popen):
         """Test NuGetRunner.pack """
         mock_process = MagicMock()
@@ -50,7 +50,7 @@ class TestUGetCliNuGetRunner(unittest.TestCase):
         assert nuget_runner.pack("TestProject.csproj", "Output", "Debug", "TestProject.1.0.0.unitypackage") == 0
         mock_popen.assert_called_with(expected_command_str, shell=True)
 
-    @patch('nuget.Popen')
+    @patch('ugetcli.nuget.Popen')
     def test_nuget_runner_push(self, mock_popen):
         """Test NuGetRunner.push"""
         mock_process = MagicMock()
