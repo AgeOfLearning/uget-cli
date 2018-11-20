@@ -7,7 +7,7 @@ Tests functionality of the NuGet Runner integration
 """
 import unittest
 import os
-from unittest.mock import MagicMock, patch
+from mock import MagicMock, patch
 
 from ugetcli.nuget import NuGetRunner
 

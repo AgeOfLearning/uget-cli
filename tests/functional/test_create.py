@@ -10,7 +10,7 @@ import os
 import unittest
 import json
 from click.testing import CliRunner
-from unittest.mock import MagicMock, patch
+from mock import MagicMock, patch
 
 from ugetcli import cli
 from ugetcli.utils import create_empty_file

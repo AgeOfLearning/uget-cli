@@ -7,7 +7,7 @@ Tests functionality of the Unity Runner integration
 """
 import unittest
 import os
-from unittest.mock import MagicMock, patch
+from mock import MagicMock, patch
 
 from ugetcli.utils import temp_dir
 from ugetcli.unity import UnityRunner

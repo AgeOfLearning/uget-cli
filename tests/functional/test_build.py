@@ -9,7 +9,7 @@ Tests functionality of the cli build command with various options.
 import unittest
 import json
 from click.testing import CliRunner
-from unittest.mock import MagicMock, patch
+from mock import MagicMock, patch
 
 from ugetcli import cli
 
