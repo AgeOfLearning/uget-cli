@@ -6,7 +6,7 @@ uGet Cli
 .. image:: https://img.shields.io/pypi/v/ugetcli.svg
         :target: https://pypi.python.org/pypi/ugetcli
 
-.. image:: https://img.shields.io/travis/AgeOfLearning/ugetcli.svg
+.. image:: https://img.shields.io/travis/AgeOfLearning/uget-cli.svg
         :target: https://travis-ci.org/AgeOfLearning/uget-cli
 
 .. image:: https://readthedocs.org/projects/ugetcli/badge/?version=latest
@@ -17,6 +17,19 @@ uGet Cli
 
 
 uGet Command Line Interface
+
+Installation
+------------
+
+**Disclaimer**: This software is currently alpha. Stability is not guaranteed.
+
+You can install this package using pip:
+
+.. code-block:: bash
+
+    pip install ugetcli
+
+
 
 Quickstart
 ----------
