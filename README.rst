@@ -7,7 +7,7 @@ uGet Cli
         :target: https://pypi.python.org/pypi/ugetcli
 
 .. image:: https://img.shields.io/travis/AgeOfLearning/ugetcli.svg
-        :target: https://travis-ci.org/AgeOfLearning/ugetcli
+        :target: https://travis-ci.org/AgeOfLearning/uget-cli
 
 .. image:: https://readthedocs.org/projects/ugetcli/badge/?version=latest
         :target: https://ugetcli.readthedocs.io/en/latest/?badge=latest
