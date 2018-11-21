@@ -1,25 +1,14 @@
-# Config file for automatic testing at travis-ci.org
-
 language: python
 python:
-  - 2.7
-
-# Command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+- 2.7
 install: pip install -U tox-travis
-
-# Command to run tests, e.g. python setup.py test
 script: tox
-
-# Assuming you have installed the travis-ci CLI tool, after you
-# create the Github repo and add it to Travis, run the
-# following command to finish PyPI deployment setup:
-# $ travis encrypt --add deploy.password
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
   user: leonidumanskiyaofl
   password:
-    secure: 3wciii+mU/kdcrGrGghvESN0Co0XHZGc5zvW3bQINNIyFjkzCTaBrskFVo+MUd/4KE+lPdsyaM8cmz3hAcPJPx+CGQGhRbjwm2AndO/FpdDogBfVBTmfT6Emb2U5BiMoIUED7PI547POx1vtFvSQs0Gi4TqQg+HgpZDNTrDcFVFm7JUlWzOBrKkH6ECEC55x3hj+srvpZKXgidKp9u4c2CxNCHZoXeRAuhDxUW9z3TjAiHyD/k5GsZ7OZYrjEAyDsw5bn05HUpYryaoJfrSU6MDwb5KP6V7UVpTrnmvwxztyaYm/A+dwmkK+n1ao7N/xFtUbcVodZekCJt86u32ld2qCgKqXUKEM9qMQggqufwa7g7GXAxtjJAtl07WjYt6wN0+ni8ivPD99Y5msVWsOKSP5/VDHZsrfjUSYZUhgBJIQANi8rnb5APPnkQCaQgaxGf5uw03ZyT6TKRfVWNQT7iLdP6+uoajm9dqYHwQmTVEbCVSmEUHAQE9XriTBkY6HVeJOYlJJawyVZPb5JaUFEuBaXY2XPibFmHVUc68DkuEwsp/QhVcOUAP6jZarMFV85xyaTDlQQxtwRiML+EvpivUhqnJgDufCdpMXvYxdNe6QsqqoOqaPQagr+IFlkKYvGP+wCtBE/BVp1y1RKJBimMB/NInfjqx6GOgVfVmkGxw=
+    secure: LAjWAF+PCgvCN84wB70CPouSEm1FdGvr1JWzQis2jj6CmUa1CMLJFAAXUrDvxIMviwZm1WTLPTiQDdy9GddFAM0keKw3f2k0Pg9KDgHWQrmQ9+24SIVkkf91uKwJuFDW4ZFwDaOxsydVAzlvosmcfJU2a89YD9eh1SllhnRJQGr2byRrkELArsQHtlN0HEfzmqU/3xWSGl444c9jLFfYozEhLhTrzPfeX1gNj+6CC+/CT494eIW/lShuFSAW8C4E2uJdyC1ypEZbtg8xi+adkcoEVRt4bSCbpY7h+VyBFEXvhjWqGOO4szVyhQH6S/0jMxxTDdYoxB6TBUiGXnU4C41z2slFXQ9ICczcnCM28OilPyhML3N/TkuHpsTMDbwmgE9FGdAjY/BgyFbuJbpGot9lxeLhs/asGAyMhGAFV0N8N7LiWjUIbkktg7TyGl4aEGVWxmhUlMSVeUzhSgIxSdvF0+rF0UDSEQhlx8H/KSeeXssZF2ZpuQyTZqEVHDvHcw+Ly0rtDEs2tkmduaiscvUcwm03vRSuf/hRw31cL5m9+8D0Um19kri2LIaLuhQigoslR31ZkJb+KpFB0zP2DafW0rcTD0pBo8+2FvYm3ZWsbREXRe75JcD3U3MqGFr6onjZzN0IGkDfa9FKGLh8il2du5J2lRBTMm77KChqfJA=
   on:
     tags: true
     repo: AgeOfLearning/uget-cli
