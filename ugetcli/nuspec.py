@@ -1,6 +1,6 @@
-import utils
 import os
 import xml.etree.ElementTree as ET
+from ugetcli import utils
 
 """
 Helper module that provides access to .nuspec file helper methods

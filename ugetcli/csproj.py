@@ -1,7 +1,7 @@
 import os
 import re
 import xml.etree.ElementTree as ET
-import utils
+from ugetcli import utils
 
 """
 Helper module that provides access to NuGet methods

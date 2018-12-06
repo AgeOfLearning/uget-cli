@@ -1,7 +1,7 @@
 import os
 import json
 import click
-from uget import UGetCli
+from ugetcli.uget import UGetCli
 
 
 # Helper method for a command and pre-load value from the config file

@@ -1,7 +1,7 @@
 import os
 from subprocess import call, Popen
 import click
-from utils import escape_exe_path
+from ugetcli.utils import escape_exe_path
 
 """
 Helper module that provides access to NuGet methods

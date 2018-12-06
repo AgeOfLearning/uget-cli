@@ -1,15 +1,15 @@
 import os
 import re
 import sys
-import utils
 import tempfile
 import shutil
 import click
-from msbuild import MsBuildRunner
-from nuget import NuGetRunner
-from unity import UnityRunner
-from nuspec import NuSpec
-from csproj import CsProj
+from ugetcli import utils
+from ugetcli.msbuild import MsBuildRunner
+from ugetcli.nuget import NuGetRunner
+from ugetcli.unity import UnityRunner
+from ugetcli.nuspec import NuSpec
+from ugetcli.csproj import CsProj
 
 
 class UGetCli:

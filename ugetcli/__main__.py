@@ -2,7 +2,7 @@
 
 """Console script for ugetcli."""
 import sys
-import cli
+from ugetcli import cli
 
 
 # Program entry point - execute cli.ugetcli Click Command Group

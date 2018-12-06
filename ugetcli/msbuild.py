@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 import click
-from utils import escape_exe_path
+from ugetcli.utils import escape_exe_path
 from subprocess import call, Popen
 
 """
