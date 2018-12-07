@@ -82,9 +82,9 @@ class TestUGetCliCreate(unittest.TestCase):
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
                                 "UNITY_SERIAL": None})
         with runner.isolated_filesystem():
-            os.makedirs("bin/Output/Debug")
-            create_empty_file("bin/Output/Debug/TestProject.dll")
-            create_empty_file("bin/Output/Debug/TestProject.pdb")
+            os.makedirs("custom/bin/Output/Debug")
+            create_empty_file("custom/bin/Output/Debug/TestProject.dll")
+            create_empty_file("custom/bin/Output/Debug/TestProject.pdb")
             result = runner.invoke(cli.ugetcli, ['create', '--unity-path', 'unity.exe', '--path', 'custom/'], obj={})
 
         assert result.exit_code == 0, result
