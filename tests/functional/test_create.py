@@ -25,12 +25,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with default options"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -41,6 +44,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
@@ -54,12 +58,15 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
-    def test_cli_uget_create_with_path(
+    def test_cli_uget_create_with_path_directory(
         self, unity_runner_mock, csproj_mock):
-        """Test cli: uget create with --path option"""
+        """Test cli: uget create with --path option when path is a directory"""
+
+        invocation_results = [False]
 
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
@@ -67,6 +74,7 @@ class TestUGetCliCreate(unittest.TestCase):
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -77,6 +85,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "custom/MyProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -90,19 +99,23 @@ class TestUGetCliCreate(unittest.TestCase):
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
         csproj_mock.assert_called_with('custom/')
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
-    def test_cli_uget_create_with_output_dir(
+    def test_cli_uget_create_with_path_file(
         self, unity_runner_mock, csproj_mock):
-        """Test cli: uget create with --output-dir option"""
+        """Test cli: uget create with --path option when path is a .csproj file"""
+
+        invocation_results = [False]
 
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
-            assert args[2] == os.path.normpath('out/TestProject_1.0.0_Release.unitypackage')
+            assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -113,6 +126,49 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "custom/MyProject.csproj"
+        csproj_mock.return_value = csproj_instance
+
+        runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
+                                "UNITY_SERIAL": None})
+        with runner.isolated_filesystem():
+            os.makedirs("custom/bin/Output/Debug")
+            create_empty_file("custom/bin/Output/Debug/TestProject.dll")
+            create_empty_file("custom/bin/Output/Debug/TestProject.pdb")
+            result = runner.invoke(cli.ugetcli, ['create', '--unity-path', 'unity.exe',
+                                                 '--path', 'custom/MyProject.csproj'], obj={})
+
+        assert result.exit_code == 0, result
+        unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
+        csproj_mock.assert_called_with('custom/MyProject.csproj')
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
+
+    @patch('ugetcli.uget.CsProj')
+    @patch('ugetcli.uget.UnityRunner')
+    def test_cli_uget_create_with_output_dir(
+        self, unity_runner_mock, csproj_mock):
+        """Test cli: uget create with --output-dir option"""
+
+        invocation_results = [False]
+
+        # Mock running Unity to export unity package
+        def export_unitypackage_mock(*args, **kwargs):
+            assert 'UnityProject' in args[0]  # In temp folder
+            assert args[1] == os.path.normpath('Assets/TestProject')
+            assert args[2] == os.path.normpath('out/TestProject_1.0.0_Release.unitypackage')
+            create_empty_file(args[2])
+            invocation_results[0] = True
+            return 0
+
+        unity_runner_instance = MagicMock()
+        unity_runner_instance.export_unitypackage = export_unitypackage_mock
+        unity_runner_mock.return_value = unity_runner_instance
+
+        csproj_instance = MagicMock()
+        csproj_instance.get_assembly_name.return_value = "TestProject"
+        csproj_instance.get_assembly_version.return_value = "1.0.0"
+        csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -125,6 +181,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -132,12 +189,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --configuration option"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Debug.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -148,6 +208,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -161,6 +222,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -168,12 +230,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with UNITY_PATH set inside env variable"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -184,6 +249,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": "custom_unity.exe", "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -197,6 +263,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('custom_unity.exe', None, None, None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -204,12 +271,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --unity-project-path"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'MyUnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -220,6 +290,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -233,6 +304,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -240,12 +312,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --root-dir"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/MyUnityPackageRoot')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -256,6 +331,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -269,7 +345,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
-
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -277,12 +353,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --clean"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -293,6 +372,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -314,6 +394,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -321,12 +402,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --unity-username"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -337,6 +421,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -350,6 +435,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', 'test_username', None, None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
 
     @patch('ugetcli.uget.CsProj')
@@ -358,12 +444,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with UNITY_USERNAME env variable"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -374,6 +463,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": "test_username1", "UNITY_PASSWORD": None,
@@ -387,6 +477,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', 'test_username1', None, None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -394,12 +485,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --unity-password"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -410,6 +504,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -423,6 +518,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, 'password', None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -430,12 +526,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with UNITY_PASSWORD env variable"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -446,6 +545,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": 'password',
@@ -459,6 +559,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, 'password', None, False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -466,12 +567,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with --unity-serial"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -482,6 +586,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -495,6 +600,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, 'myserial', False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -502,12 +608,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with UNITY_SERIAL env variable"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/TestProject')
             assert args[2] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -518,6 +627,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"UNITY_PATH": None, "UNITY_USERNAME": None, "UNITY_PASSWORD": None,
@@ -531,6 +641,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('unity.exe', None, None, 'myserial', False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -538,12 +649,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with options loaded via config json"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'CustomUnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/MyUnityPackage')
             assert args[2] == os.path.normpath('CustomOutput/TestProject_1.0.0_Debug.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -554,6 +668,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         config_data = {
@@ -584,7 +699,7 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('custom_unity.exe', "my_username", "my_password", "my_serial", False)
-
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.UnityRunner')
@@ -592,12 +707,15 @@ class TestUGetCliCreate(unittest.TestCase):
         self, unity_runner_mock, csproj_mock):
         """Test cli: uget create with options loaded via config file"""
 
+        invocation_results = [False]
+
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'CustomUnityProject' in args[0]  # In temp folder
             assert args[1] == os.path.normpath('Assets/MyUnityPackage')
             assert args[2] == os.path.normpath('CustomOutput/TestProject_1.0.0_Debug.unitypackage')
             create_empty_file(args[2])
+            invocation_results[0] = True
             return 0
 
         unity_runner_instance = MagicMock()
@@ -608,6 +726,7 @@ class TestUGetCliCreate(unittest.TestCase):
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.0.0"
         csproj_instance.get_output_path.return_value = "bin/Output/Debug"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
 
         config_data = {
@@ -641,4 +760,5 @@ class TestUGetCliCreate(unittest.TestCase):
 
         assert result.exit_code == 0, result
         unity_runner_mock.assert_called_with('custom_unity.exe', "my_username", "my_password", "my_serial", False)
+        assert invocation_results[0], "did not invoke export_unitypackage_mock"
 

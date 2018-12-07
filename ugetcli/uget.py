@@ -63,7 +63,8 @@ class UGetCli:
         if not version:
             raise click.UsageError("Failed to identify package version.")
 
-        csproj_output_dir = os.path.join(csproj_path, csproj.get_output_path(configuration))
+        csproj_dir_path = os.path.dirname(csproj.path)
+        csproj_output_dir = os.path.join(csproj_dir_path, csproj.get_output_path(configuration))
         if not csproj_output_dir or not os.path.isdir(csproj_output_dir):
             raise click.UsageError('Output directory {0} not found'.format(csproj_output_dir))
 
