@@ -39,6 +39,7 @@ Supports packing assets and correctly handles meta files (GUIDS).
 
 .. code-block:: bash
 
+    cd MySolutionName/MyProjectName
     uget build  // Build Visual Studio project
     uget create // Create Unity Package (.unitypackage)
     uget pack   // Create NuGet Package (.nupkg)
