@@ -57,7 +57,7 @@ Arguments:
 
 **-c** / **--configuration** configuration: *Debug* or *Release*
 
-**-m** / **--msbuild-path** path to the msbuild executable. If not provided, uget cli will try to automatically find it. Can be replaced with MSBUILD_PATH environment variable.
+**-m** / **--msbuild-path** path to the msbuild executable. If not provided, uget cli will try to automatically find it. Can be provided with MSBUILD_PATH environment variable.
 
 **-r** / **--rebuild** (flag) if provided, clean rebuild will be triggered.
 
@@ -75,7 +75,7 @@ Arguments:
 
 **-c** / **--configuration** configuration: *Debug* or *Release*
 
-**-u** / **--unity-path** path to Unity Editor.  Can be replaced with UNITY_PATH environment variable.
+**-u** / **--unity-path** path to Unity Editor.  Can be provided with UNITY_PATH environment variable.
 
 **-t** / **--unity-project-path** path to the Unity project used to build .unitypackage. Project can contain optional assets.
 
@@ -83,11 +83,11 @@ Arguments:
 
 **--clean** (flag) If set, cleans other .unitypackage files with the same configuration at the output location.
 
-**--unity-username** provides username for Unity editor. Can be replaced with UNITY_USERNAME environment variable.
+**--unity-username** provides username for Unity editor. Can be provided with UNITY_USERNAME environment variable.
 
-**--unity-password** provides password for Unity editor. Can be replaced with UNITY_PASSWORD environment variable.
+**--unity-password** provides password for Unity editor. Can be provided with UNITY_PASSWORD environment variable.
 
-**--unity-serial** provides serial for Unity editor. Can be replaced with UNITY_SERIAL environment variable.
+**--unity-serial** provides serial for Unity editor. Can be provided with UNITY_SERIAL environment variable.
 
 
 
@@ -102,7 +102,7 @@ Arguments:
 
 **-o** / **--output-dir** output NuGet package directory.
 
-**-n** / **--nuget-path** path to NuGet executable. Can be replaced with NUGET_PATH environment variable.
+**-n** / **--nuget-path** path to NuGet executable. Can be provided with NUGET_PATH environment variable.
 
 **-u** / **--unitypackage-path** path to .unitypackage.
 
@@ -123,9 +123,9 @@ Arguments:
 
 **-f** / **--feed** NuGet Feed URL.
 
-**-n** / **--nuget-path** path to NuGet executable. Can be replaced with NUGET_PATH environment variable.
+**-n** / **--nuget-path** path to NuGet executable. Can be provided with NUGET_PATH environment variable.
 
-**-a** / **--api-key** NuGet Api Key.  Can be replaced with NUGET_API_KEY environment variable.
+**-a** / **--api-key** NuGet Api Key.  Can be provided with NUGET_API_KEY environment variable.
 
 
 Configuration file
