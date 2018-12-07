@@ -81,7 +81,7 @@ Arguments:
 
 **-r** / **--root-dir** root directory inside the Unity Project into which assembly is copied. Used to export .unitypackage. If not provided, project name is used.
 
-**-c** / **--clean** (flag) If set, cleans other .unitypackage files with the same configuration at the output location.
+**--clean** (flag) If set, cleans other .unitypackage files with the same configuration at the output location.
 
 **--unity-username** provides username for Unity editor. Can be replaced with UNITY_USERNAME environment variable.
 
