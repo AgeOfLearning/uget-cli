@@ -43,7 +43,8 @@ class CsProj:
         for property_group in root.findall(self.xml_element_property_group):
             output_path = property_group.find(self.xml_element_output_path)
             if output_path is not None and property_group.attrib["Condition"] == condition:
-                return output_path.text
+                # Convert to linux-style path to preserve compatibility between OS
+                return output_path.text.replace("\\", "/")
         return None
 
     def get_assembly_version(self):

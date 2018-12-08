@@ -61,8 +61,8 @@ class TestUGetCliCsproj(unittest.TestCase):
             csproj_root = os.path.join(tmp_root_dir, "test")
             shutil.copytree(get_fixture_dir(), csproj_root)
             csproj = CsProj(os.path.join(csproj_root, _TEST_CSPROJ))
-            assert csproj.get_output_path("Debug") == "bin\\Debug\\"
-            assert csproj.get_output_path("Release") == "bin\\Release\\"
+            assert csproj.get_output_path("Debug") == "bin/Debug/"
+            assert csproj.get_output_path("Release") == "bin/Release/"
 
     def test_csproj_get_assembly_version(self):
         """Test CsProj.get_assembly_version - returns assembly version path from a csproj / AssemblyInfo file """
