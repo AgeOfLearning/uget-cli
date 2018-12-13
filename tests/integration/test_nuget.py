@@ -42,9 +42,9 @@ class TestUGetCliNuGetRunner(unittest.TestCase):
         mock_process.wait.return_value = 0
         mock_popen.return_value = mock_process
 
-        expected_command_str = ["nuget.exe", "pack", "TestProject.csproj", "-OutputDirectory", "Output",
-                                "-Properties", "Configuration=Debug;unityPackagePath=TestProject.1.0.0.unitypackage",
-                                "-Verbosity", "normal"]
+        expected_command_str = "nuget.exe pack TestProject.csproj -OutputDirectory Output " \
+                               "-Properties Configuration=Debug;unityPackagePath=TestProject.1.0.0.unitypackage " \
+                               "-Verbosity normal"
 
         nuget_runner = NuGetRunner("nuget.exe")
         assert nuget_runner.pack("TestProject.csproj", "Output", "Debug", "TestProject.1.0.0.unitypackage") == 0
@@ -57,9 +57,9 @@ class TestUGetCliNuGetRunner(unittest.TestCase):
         mock_process.wait.return_value = 0
         mock_popen.return_value = mock_process
 
-        expected_command_str = ["nuget.exe", "push", "Test.nupkg", "-Verbosity", "normal",
-                                "-Source", "http://test.com/nuget",
-                                "-ApiKey", "myapikey7"]
+        expected_command_str = "nuget.exe push Test.nupkg -Verbosity normal " \
+                               "-Source http://test.com/nuget " \
+                               "-ApiKey myapikey7"
 
         nuget_runner = NuGetRunner("nuget.exe")
         assert nuget_runner.push("Test.nupkg", "http://test.com/nuget", "myapikey7") == 0

@@ -43,11 +43,11 @@ class NuGetRunner:
     def _run_nuget(self, options):
         nuget_path = escape_exe_path(self.nuget_path)
         command_list = [nuget_path] + options
+        command_str = " ".join(command_list)
         if self.debug:
-            command_str = " ".join(command_list)
             click.secho("Running " + command_str)
 
-        process = Popen(command_list, shell=True)
+        process = Popen(command_str, shell=True)
         return process.wait()
 
     @staticmethod
