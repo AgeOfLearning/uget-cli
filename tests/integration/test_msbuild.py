@@ -88,9 +88,9 @@ class TestUGetCliMSbuild(unittest.TestCase):
             configuration = "Debug"
             msbuild = MsBuildRunner(msbuild_path)
             msbuild.build(project_path, configuration, False)
-            expected_command = 'msbuild.exe {project_path} /t:Build /p:"Configuration={configuration}"' \
-                               ' /verbosity:{verbosity}'.format(project_path=project_path, configuration=configuration,
-                                                                verbosity="minimal")
+            expected_command = ['msbuild.exe', project_path, '/t:Build',
+                                '/p:"Configuration={configuration}"'.format(configuration=configuration),
+                                '/verbosity:minimal']
             mock_popen.assert_called_with(expected_command, shell=True)
             mock_process_instance.wait.assert_called()
 
@@ -110,9 +110,9 @@ class TestUGetCliMSbuild(unittest.TestCase):
             configuration = "Debug"
             msbuild = MsBuildRunner(msbuild_path)
             msbuild.build(project_path, configuration, True)
-            expected_command = 'msbuild.exe {project_path} /t:Clean,Build /p:"Configuration={configuration}"' \
-                               ' /verbosity:{verbosity}'.format(project_path=project_path, configuration=configuration,
-                                                                verbosity="minimal")
+            expected_command = ['msbuild.exe', project_path, '/t:Clean,Build',
+                                '/p:"Configuration={configuration}"'.format(configuration=configuration),
+                                '/verbosity:minimal']
             mock_popen.assert_called_with(expected_command, shell=True)
             mock_process_instance.wait.assert_called()
 

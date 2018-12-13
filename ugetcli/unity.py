@@ -49,10 +49,11 @@ class UnityRunner:
         return self._run_editor(arguments, stdout_log_path, stderr_log_path)
 
     def _run_editor(self, options, stdout_log_path, stderr_log_path):
-        command_str = " ".join([self.unity_path] + options)
+        command_list = [self.unity_path] + options
         if self.debug:
+            command_str = " ".join(command_list)
             click.secho("Running " + command_str)
 
         with open(stdout_log_path, "wb") as stdout, open(stderr_log_path, "wb") as stderr:
-            process = Popen(command_str, stderr=stderr, stdout=stdout)
+            process = Popen(command_list, stderr=stderr, stdout=stdout)
             return process.wait()

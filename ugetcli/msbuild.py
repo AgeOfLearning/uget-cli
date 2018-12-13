@@ -30,11 +30,12 @@ class MsBuildRunner:
 
     def _run_msbuild(self, options):
         msbuild_path = escape_exe_path(self.msbuild_path)
-        command_str = " ".join([msbuild_path] + options)
+        command_list = [msbuild_path] + options
         if self.debug:
+            command_str = " ".join(command_list)
             click.secho("Running " + command_str)
 
-        process = Popen(command_str, shell=True)
+        process = Popen(command_list, shell=True)
         return process.wait()
 
     @staticmethod

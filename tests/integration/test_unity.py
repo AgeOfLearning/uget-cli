@@ -45,10 +45,9 @@ class TestUGetCliUnityRunner(unittest.TestCase):
                 unity_runner = UnityRunner(unity_exe, username, password, serial)
                 assert unity_runner.export_unitypackage(project_path, package_root, output_path, temp_dir_path) == 0
 
-                expected_command = "{unity} -projectPath {project_path} -exportPackage {package_root} {output_path} " \
-                                   "-logFile {unity_log} -batchmode -quit -username {username} -password {password} " \
-                                   "-serial {serial}"\
-                    .format(unity=unity_exe, project_path=project_path, package_root=package_root,
-                            output_path=os.path.abspath(output_path), unity_log=expected_unity_log_path,
-                            username=username, password=password, serial=serial)
+                expected_command = [unity_exe, "-projectPath", project_path,
+                                    "-exportPackage", package_root, os.path.abspath(output_path),
+                                    "-logFile", expected_unity_log_path, "-batchmode", "-quit",
+                                    "-username", username, "-password", password,
+                                    "-serial", serial]
                 mock_popen.assert_called_with(expected_command, stderr=expected_std_out_err, stdout=expected_std_out_err)
