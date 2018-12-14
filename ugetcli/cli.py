@@ -78,8 +78,6 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, config_path, 
               help='Output .unitypackage directory.')
 @click.option('-c', '--configuration', type=click.Choice(['Debug', 'Release']), default='Release',
               help='Build configuration.')
-@click.option('-u', '--unity-path', type=click.Path(), default=None, envvar='UNITY_PATH',
-              help='Path to Unity editor executable.')
 @click.option('-t', '--unity-project-path', type=click.Path(), default="UnityProject",
               help='Path to the Unity project used to build .unitypackage. Project can contain optional assets.')
 @click.option('-r', '--root-dir', type=click.Path(), default=None,
@@ -87,25 +85,15 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, config_path, 
                    "If not provided, project name is used.")
 @click.option('--clean', is_flag=True,
               help="If set, cleans other .unitypackage files with the same configuration at the output location.")
-@click.option('--unity-username', type=str, default=None, envvar='UNITY_USERNAME',
-              help='Username passed into Unity command line.')
-@click.option('--unity-password', type=str, default=None, envvar='UNITY_PASSWORD',
-              help='Username passed into Unity command line.')
-@click.option('--unity-serial', type=str, default=None, envvar='UNITY_SERIAL',
-              help='Username passed into Unity command line.')
 @click.option('--config', type=click.Path(), help="Config json.")
 @click.option('--config-path', type=str, help="Config json.")
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def create(ctx, path, output_dir, configuration, unity_path, unity_project_path, root_dir, clean,
-          unity_username, unity_password, unity_serial, config, config_path, debug, quiet):
-    if not unity_path:
-        raise click.BadOptionUsage("Unity path must be present. Please use -u/--unity-path option or set UNITY_PATH "
-                                   "env variable")
+def create(ctx, path, output_dir, configuration, unity_project_path, root_dir, clean, config, config_path, debug,
+           quiet):
     uget = UGetCli(debug, quiet)
-    return uget.create(path, output_dir, configuration, unity_path, unity_project_path, root_dir, clean,
-                       unity_username, unity_password, unity_serial)
+    return uget.create(path, output_dir, configuration, unity_project_path, root_dir, clean)
 
 
 @ugetcli.command('pack', cls=_create_command_class('config', 'config_path'),

@@ -7,7 +7,7 @@ import click
 from ugetcli import utils
 from ugetcli.msbuild import MsBuildRunner
 from ugetcli.nuget import NuGetRunner
-from ugetcli.unity import UnityRunner
+from ugetcli.unitypackage import UnityPackageRunner
 from ugetcli.nuspec import NuSpec
 from ugetcli.csproj import CsProj
 
@@ -37,20 +37,16 @@ class UGetCli:
         msbuild = MsBuildRunner(msbuild_path, self.debug)
         return msbuild.build(csproj_path, configuration, rebuild)
 
-    def create(self, csproj_path, output_dir, configuration, unity_path, unity_project_path,
-               unitypackage_root_path_relative, clean, unity_username, unity_password, unity_serial):
+    def create(self, csproj_path, output_dir, configuration, unity_project_path,
+               unitypackage_root_path_relative, clean):
         """
         Creates .unitypackage that contains project assembly and assets
         :param path: Path to .csproj
         :param output_dir: Output directory into which .unitypackage is being built
         :param configuration: Debug or Release
-        :param unity_path: Path to the Unity editor executable
         :param unity_project_path: Path to the unity project used to build .unitypackage
         :param unitypackage_root_path_relative: Root path inside a unity_project_path used to export .unitypackage
         :param clean: If set, other Unity Packages will be removed from the output folder if they match configuration
-        :param unity_username: Unity Username. Passed to Unity command line as -username
-        :param unity_password: Unity Password. Passed to Unity command line as -password
-        :param unity_serial: Unity Serial key. Passed to Unity command line as -serial
         """
         csproj = CsProj(csproj_path)
 
@@ -112,20 +108,22 @@ class UGetCli:
             unity_project_stage_path = os.path.join(temp_build_stage_dir, unity_project_folder_name)
             shutil.copytree(unity_project_path, unity_project_stage_path, ignore=self._get_ignore_unityproject_patterns())
 
-            # Export .unitypackage
-            logs_dir_path = tempfile.mkdtemp()  # Temporary directory for logs will be removed when host restarts
-            unity_runner = UnityRunner(unity_path, unity_username, unity_password, unity_serial, self.debug)
-            click.secho("Running Unity to build {0}".format(unitypackage_name))
-            exit_code = unity_runner.export_unitypackage(unity_project_stage_path, unitypackage_root_path_relative, unitypackage_path, logs_dir_path)
-            if exit_code != 0:
-                raise RuntimeError("Unity failed with non-zero exit code: " + str(exit_code) +
-                                   ". Check log files located at: " + logs_dir_path)
+            # Create .unitypackage
+            unity_runner = UnityPackageRunner(self.debug)
+            click.secho("Exporting Unitypackage: {0}".format(unitypackage_name))
+            unity_runner.export_unitypackage(unity_project_stage_path, unitypackage_root_path_relative, unitypackage_path)
 
             # Copy exported assets back to the project to preserve new GUIDS
             unitypackage_root_path_full_source = os.path.join(unity_project_path, unitypackage_root_path_relative)
             unitypackage_root_path_full_stage = os.path.join(unity_project_stage_path, unitypackage_root_path_relative)
 
             utils.copy_replace_directory(unitypackage_root_path_full_stage, unitypackage_root_path_full_source)
+
+            package_root_dir_meta_file_name_stage = unitypackage_root_path_full_stage + '.meta'
+            package_root_dir_meta_file_name_source = unitypackage_root_path_full_source + '.meta'
+
+            if os.path.isfile(package_root_dir_meta_file_name_stage):
+                shutil.copy(package_root_dir_meta_file_name_stage, package_root_dir_meta_file_name_source)
 
         if not os.path.isfile(unitypackage_path):
             raise RuntimeError("UnityPackage not found at path: " + unitypackage_path)
