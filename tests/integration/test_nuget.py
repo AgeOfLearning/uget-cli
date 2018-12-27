@@ -44,7 +44,7 @@ class TestUGetCliNuGetRunner(unittest.TestCase):
 
         expected_command_str = "nuget.exe pack TestProject.csproj -OutputDirectory Output " \
                                "-Verbosity normal " \
-                               "-Properties Configuration=Debug;unityPackagePath=TestProject.1.0.0.unitypackage " \
+                               "-Properties Configuration=Debug;unityPackagePath=TestProject.1.0.0.unitypackage" \
 
         nuget_runner = NuGetRunner("nuget.exe")
         assert nuget_runner.pack("TestProject.csproj", "Output", "Debug", "TestProject.1.0.0.unitypackage") == 0
