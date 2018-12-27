@@ -19,14 +19,10 @@ class NuGetRunner:
 
     def pack(self, path, output_dir, configuration, unitypackage_path):
         """ Runs NuGet to pack NuGet package """
-        nuget_properties = {
-            "unityPackagePath": unitypackage_path,
-            "Configuration": configuration
-        }
         options = ["pack", path,
                    "-OutputDirectory", output_dir,
                    "-Verbosity", "detailed" if self.debug else "normal",
-                   "-Properties", self._build_nuget_properties_str(nuget_properties)]
+                   "-Properties", "unityPackagePath={0};Configuration={1}".format(unitypackage_path, configuration)]
 
         return self._run_nuget(options)
 
