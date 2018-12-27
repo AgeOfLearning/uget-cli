@@ -25,8 +25,9 @@ class NuGetRunner:
         }
         options = ["pack", path,
                    "-OutputDirectory", output_dir,
-                   "-Properties", self._build_nuget_properties_str(nuget_properties),
-                   "-Verbosity", "detailed" if self.debug else "normal"]
+                   "-Verbosity", "detailed" if self.debug else "normal",
+                   "-Properties", self._build_nuget_properties_str(nuget_properties)]
+
         return self._run_nuget(options)
 
     def push(self, path, source_url, api_key):
@@ -78,5 +79,5 @@ class NuGetRunner:
         """
         properties_strings = [str(k) + "=" + str(v) for (k, v) in properties.items()]  # key=value
         # Sorted is used to preserve consistency between python 2.7 and 3.6, mainly for unit testing purposes
-        properties_joined = ";".join(sorted(properties_strings))  # key=value;key2=value2
+        properties_joined = ";".join(reversed(properties_strings))  # key=value;key2=value2
         return properties_joined
