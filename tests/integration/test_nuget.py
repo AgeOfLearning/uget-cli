@@ -43,7 +43,7 @@ class TestUGetCliNuGetRunner(unittest.TestCase):
         mock_popen.return_value = mock_process
 
         expected_command_str = "nuget.exe pack TestProject.csproj -OutputDirectory Output " \
-                               "-Properties unityPackagePath=TestProject.1.0.0.unitypackage;Configuration=Debug; " \
+                               "-Properties Configuration=Debug;unityPackagePath=TestProject.1.0.0.unitypackage " \
                                "-Verbosity normal"
 
         nuget_runner = NuGetRunner("nuget.exe")
