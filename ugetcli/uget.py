@@ -80,10 +80,9 @@ class UGetCli:
         if not unitypackage_root_path_relative:
             unitypackage_root_path_relative = assembly_name
 
-        if not unitypackage_root_path_relative.startswith("Assets" + os.sep):  # Package root should always start with "Assets/"
-            unitypackage_root_path_relative = os.path.join("Assets", unitypackage_root_path_relative)
+        unitypackage_export_root = self._get_unity_package_export_root(unity_project_path, unitypackage_root_path_relative)
+        click.secho("Unitypackage Export Path: {0}".format(unitypackage_export_root))
 
-        unitypackage_export_root = os.path.join(unity_project_path, unitypackage_root_path_relative)
         if not os.path.exists(unitypackage_export_root):
             os.makedirs(unitypackage_export_root)
         elif not os.path.isdir(unitypackage_export_root):
@@ -102,28 +101,10 @@ class UGetCli:
 
         unitypackage_path = os.path.join(output_dir, unitypackage_name)
 
-        with utils.temp_dir() as temp_build_stage_dir:
-            # Clone output into temp directory that will guaranteed to be removed
-            unity_project_folder_name = os.path.basename(os.path.normpath(unity_project_path))
-            unity_project_stage_path = os.path.join(temp_build_stage_dir, unity_project_folder_name)
-            shutil.copytree(unity_project_path, unity_project_stage_path, ignore=self._get_ignore_unityproject_patterns())
-
-            # Create .unitypackage
-            unity_runner = UnityPackageRunner(self.debug)
-            click.secho("Exporting Unitypackage: {0}".format(unitypackage_name))
-            unity_runner.export_unitypackage(unity_project_stage_path, unitypackage_root_path_relative, unitypackage_path)
-
-            # Copy exported assets back to the project to preserve new GUIDS
-            unitypackage_root_path_full_source = os.path.join(unity_project_path, unitypackage_root_path_relative)
-            unitypackage_root_path_full_stage = os.path.join(unity_project_stage_path, unitypackage_root_path_relative)
-
-            utils.copy_replace_directory(unitypackage_root_path_full_stage, unitypackage_root_path_full_source)
-
-            package_root_dir_meta_file_name_stage = unitypackage_root_path_full_stage + '.meta'
-            package_root_dir_meta_file_name_source = unitypackage_root_path_full_source + '.meta'
-
-            if os.path.isfile(package_root_dir_meta_file_name_stage):
-                shutil.copy(package_root_dir_meta_file_name_stage, package_root_dir_meta_file_name_source)
+        # Create .unitypackage
+        unity_runner = UnityPackageRunner(self.debug)
+        click.secho("Exporting Unitypackage: {0}".format(unitypackage_name))
+        unity_runner.export_unitypackage(unitypackage_export_root, unitypackage_path)
 
         if not os.path.isfile(unitypackage_path):
             raise RuntimeError("UnityPackage not found at path: " + unitypackage_path)
@@ -133,7 +114,7 @@ class UGetCli:
         if clean:
             self._remove_old_unitypackages(output_dir, assembly_name, configuration, version)
 
-    def pack(self, path, output_dir, nuget_path, unitypackage_path, configuration):
+    def pack(self, path, output_dir, nuget_path, unitypackage_path, configuration, unity_project_path, unitypackage_root_path_relative):
         """
         Packs NuGet Package.
         :param path: Path to the .csproj or .nuspec, or a directory containing either
@@ -168,10 +149,14 @@ class UGetCli:
             if not version:
                 raise click.UsageError("Failed to identify package version.")
 
+            if not unitypackage_root_path_relative:
+                unitypackage_root_path_relative = package_id
+
             unitypackage_name = utils.get_unitypackage_filename(package_id, version, configuration)
             unitypackage_path = os.path.join(output_dir, unitypackage_name)
+            unitypackage_export_root = self._get_unity_package_export_root(unity_project_path, unitypackage_root_path_relative)
 
-        return nuget_runner.pack(path, output_dir, configuration, unitypackage_path)
+        return nuget_runner.pack(path, output_dir, configuration, unitypackage_path, unitypackage_export_root)
 
     def push(self, path, output_dir, feed, nuget_path, api_key):
         """
@@ -187,6 +172,19 @@ class UGetCli:
         nuget_path = self._locate_nuget_path(nuget_path)
         nuget = NuGetRunner(nuget_path, self.debug)
         return nuget.push(nupkg_path, feed, api_key)
+
+    def _get_unity_package_export_root(self, unity_project_path, unitypackage_root_path_relative):
+        """
+        Generates the path of the folder to export as unitypackage.
+        :param package_id:
+        :param unity_project_path:
+        :param unitypackage_root_path_relative:
+        :return:
+        """
+        if not unitypackage_root_path_relative.startswith("Assets" + os.sep):  # Package root should always start with "Assets/"
+            unitypackage_root_path_relative = os.path.join("Assets", unitypackage_root_path_relative)
+
+        return os.path.join(unity_project_path, unitypackage_root_path_relative)
 
     def _locate_msbuild_path(self, msbuild_path):
         """

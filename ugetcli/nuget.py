@@ -17,12 +17,12 @@ class NuGetRunner:
         self.nuget_path = nuget_path
         self.debug = debug
 
-    def pack(self, path, output_dir, configuration, unitypackage_path):
+    def pack(self, path, output_dir, configuration, unitypackage_path, unitypackage_export_root):
         """ Runs NuGet to pack NuGet package """
         options = ["pack", path,
                    "-OutputDirectory", output_dir,
                    "-Verbosity", "detailed" if self.debug else "normal",
-                   "-Properties", "unityPackagePath={0};Configuration={1}".format(unitypackage_path, configuration)]
+                   "-Properties", "\"unityPackagePath={0};unityPackageExportRoot={1};Configuration={2}\"".format(unitypackage_path, unitypackage_export_root, configuration)]
 
         return self._run_nuget(options)
 

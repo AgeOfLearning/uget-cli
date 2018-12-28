@@ -112,10 +112,15 @@ def create(ctx, path, output_dir, configuration, unity_project_path, root_dir, c
 @click.option('--config-path', type=str, help="Config json.")
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
+@click.option('-t', '--unity-project-path', type=click.Path(), default="UnityProject",
+              help='Path to the Unity project used to build .unitypackage. Project can contain optional assets.')
+@click.option('-r', '--root-dir', type=click.Path(), default=None,
+              help="Root directory inside the Unity Project into which assembly is copied. Used to export .unitypackage"
+                   "If not provided, project name is used.")
 @click.pass_context
-def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, config, config_path, debug, quiet):
+def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, config, config_path, debug, quiet, unity_project_path, root_dir):
     uget = UGetCli(debug, quiet)
-    return uget.pack(path, output_dir, nuget_path, unitypackage_path, configuration)
+    return uget.pack(path, output_dir, nuget_path, unitypackage_path, configuration, unity_project_path, root_dir)
 
 
 @ugetcli.command('push', cls=_create_command_class('config', 'config_path'),
