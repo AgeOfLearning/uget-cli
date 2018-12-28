@@ -30,6 +30,8 @@ class TestUGetCliPack(unittest.TestCase):
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.2.3"
+        csproj_instance.get_output_path.return_value = "bin/Output/Release"
+        csproj_instance.path = "TestProject.csproj"
         csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
@@ -40,7 +42,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"))
+            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
 
     @patch('ugetcli.uget.NuSpec')
     @patch('ugetcli.uget.NuGetRunner')
@@ -64,7 +66,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"))
+            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -78,8 +80,8 @@ class TestUGetCliPack(unittest.TestCase):
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
         csproj_instance.get_assembly_version.return_value = "1.2.3"
-        csproj_mock.return_value = csproj_instance
         csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
+        csproj_mock.return_value = csproj_instance
 
         runner = CliRunner(env={"NUGET_PATH": None})
         with runner.isolated_filesystem():
@@ -88,7 +90,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "MyOutput", "Release", os.path.normpath("MyOutput/TestProject_1.2.3_Release.unitypackage"))
+            ".", "MyOutput", "Release", os.path.normpath("MyOutput/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -112,7 +114,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"))
+            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
         nuget_runner_mock.valid_nuget_executable.assert_called_with("custom_nuget.exe")
 
     @patch('ugetcli.uget.CsProj')
@@ -137,17 +139,24 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"))
+            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
         nuget_runner_mock.valid_nuget_executable.assert_called_with("custom_nuget.exe")
 
+    @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_unitypackage_path(
-        self, nuget_runner_mock):
+        self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with --unitypackage-path"""
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.valid_nuget_executable.return_value = True
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+
+        csproj_instance = MagicMock()
+        csproj_instance.get_assembly_name.return_value = "TestProject"
+        csproj_instance.get_assembly_version.return_value = "1.2.3"
+        csproj_mock.return_value = csproj_instance
+        csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
         runner = CliRunner(env={"NUGET_PATH": None})
         with runner.isolated_filesystem():
@@ -157,7 +166,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", "MyUnityPackage.unitypackage")
+            ".", "Output", "Release", "MyUnityPackage.unitypackage", os.path.normpath("UnityProject/Assets/TestProject"))
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -182,16 +191,24 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Debug", os.path.normpath("Output/TestProject_1.2.3_Debug.unitypackage"))
+            ".", "Output", "Debug", os.path.normpath("Output/TestProject_1.2.3_Debug.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
 
+    @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_config_json(
-        self, nuget_runner_mock):
+        self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with --config json"""
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.valid_nuget_executable.return_value = True
         nuget_runner_mock.locate_nuget.return_value = "custom_nuget.exe"
+
+        csproj_instance = MagicMock()
+        csproj_instance.get_assembly_name.return_value = "TestProject"
+        csproj_instance.get_assembly_version.return_value = "1.2.3"
+        csproj_instance.get_csproj_at_path.return_value = "TestProject.csproj"
+        csproj_mock.return_value = csproj_instance
+        csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
         config_data = {
             "output_dir": "CustomOutput",
@@ -208,16 +225,24 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage")
+            ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage", os.path.normpath("UnityProject/Assets/TestProject"))
 
+    @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
     def test_cli_uget_pack_with_config_file(
-        self, nuget_runner_mock):
+        self, nuget_runner_mock, csproj_mock):
         """Test cli: uget pack with --config-path file"""
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.valid_nuget_executable.return_value = True
         nuget_runner_mock.locate_nuget.return_value = "custom_nuget.exe"
+
+        csproj_instance = MagicMock()
+        csproj_instance.get_assembly_name.return_value = "TestProject"
+        csproj_instance.get_assembly_version.return_value = "1.2.3"
+        csproj_instance.get_csproj_at_path.return_value = "TestProject.csproj"
+        csproj_mock.return_value = csproj_instance
+        csproj_mock.get_csproj_at_path.return_value = "TestProject.csproj"
 
         config_data = {
             "output_dir": "CustomOutput",
@@ -237,4 +262,4 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage")
+            ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage", os.path.normpath("UnityProject/Assets/TestProject"))

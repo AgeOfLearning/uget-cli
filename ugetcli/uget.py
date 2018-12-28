@@ -128,33 +128,34 @@ class UGetCli:
         nuget_path = self._locate_nuget_path(nuget_path)
         nuget_runner = NuGetRunner(nuget_path, self.debug)
 
-        if not unitypackage_path:
-            # Locate project name and version
-            csproj_file_path = CsProj.get_csproj_at_path(path)
-            if csproj_file_path is not None:
-                csproj = CsProj(path, self.debug)
-                package_id = csproj.get_assembly_name()
-                version = csproj.get_assembly_version()
+        # Locate project name and version
+        csproj_file_path = CsProj.get_csproj_at_path(path)
+        if csproj_file_path is not None:
+            csproj = CsProj(path, self.debug)
+            package_id = csproj.get_assembly_name()
+            version = csproj.get_assembly_version()
+        else:
+            nuspec_file_path = NuSpec.get_nuspec_at_path(path)
+            if nuspec_file_path is not None:
+                nuspec = NuSpec(path, self.debug)
+                package_id = nuspec.get_package_id()
+                version = nuspec.get_package_version()
             else:
-                nuspec_file_path = NuSpec.get_nuspec_at_path(path)
-                if nuspec_file_path is not None:
-                    nuspec = NuSpec(path, self.debug)
-                    package_id = nuspec.get_package_id()
-                    version = nuspec.get_package_version()
-                else:
-                    raise click.UsageError("Path must be a valid path to .nuspec, .csproj, or directory containing either")
+                raise click.UsageError("Path must be a valid path to .nuspec, .csproj, or directory containing either")
 
-            if not package_id:
-                raise click.UsageError("Failed to identify package id.")
-            if not version:
-                raise click.UsageError("Failed to identify package version.")
+        if not package_id:
+            raise click.UsageError("Failed to identify package id.")
+        if not version:
+            raise click.UsageError("Failed to identify package version.")
 
-            if not unitypackage_root_path_relative:
-                unitypackage_root_path_relative = package_id
-
+        if not unitypackage_path:
             unitypackage_name = utils.get_unitypackage_filename(package_id, version, configuration)
             unitypackage_path = os.path.join(output_dir, unitypackage_name)
-            unitypackage_export_root = self._get_unity_package_export_root(unity_project_path, unitypackage_root_path_relative)
+
+        if not unitypackage_root_path_relative:
+            unitypackage_root_path_relative = package_id
+
+        unitypackage_export_root = self._get_unity_package_export_root(unity_project_path, unitypackage_root_path_relative)
 
         return nuget_runner.pack(path, output_dir, configuration, unitypackage_path, unitypackage_export_root)
 
