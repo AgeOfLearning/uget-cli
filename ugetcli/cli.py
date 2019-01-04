@@ -83,6 +83,8 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, config_path, 
 @click.option('-r', '--root-dir', type=click.Path(), default=None,
               help="Root directory inside the Unity Project into which assembly is copied. Used to export .unitypackage"
                    "If not provided, project name is used.")
+@click.option('-a', '--assembly-relative-dir', type=click.Path(), default=None,
+              help="Relative directory from $unity-project-path/$root-dir to export assemblies.")
 @click.option('--clean', is_flag=True,
               help="If set, cleans other .unitypackage files with the same configuration at the output location.")
 @click.option('--config', type=click.Path(), help="Config json.")
@@ -90,10 +92,10 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, config_path, 
 @click.option('-d', '--debug', is_flag=True, help="Enable verbose debug.")
 @click.option('-q', '--quiet', is_flag=True, help="Does not prompt for user input and hides extra info messages.")
 @click.pass_context
-def create(ctx, path, output_dir, configuration, unity_project_path, root_dir, clean, config, config_path, debug,
+def create(ctx, path, output_dir, configuration, unity_project_path, root_dir, assembly_relative_dir, clean, config, config_path, debug,
            quiet):
     uget = UGetCli(debug, quiet)
-    return uget.create(path, output_dir, configuration, unity_project_path, root_dir, clean)
+    return uget.create(path, output_dir, configuration, unity_project_path, root_dir, assembly_relative_dir, clean)
 
 
 @ugetcli.command('pack', cls=_create_command_class('config', 'config_path'),

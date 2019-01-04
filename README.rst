@@ -145,6 +145,8 @@ Example config file (uget.config.json):
         "unity_project_path": "../../UnityProjects/MyUnityProject",
         "clean": true,
         "configuration": "Debug",
+        "root_dir": "Assets/MyUnityProject", // optional
+        "assembly_relative_dir": "Editor", // optional
         "feed": "https://proget.aofl.com/nuget/AOFL-Unity-Development/"
     }
 

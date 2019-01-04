@@ -38,14 +38,15 @@ class UGetCli:
         return msbuild.build(csproj_path, configuration, rebuild)
 
     def create(self, csproj_path, output_dir, configuration, unity_project_path,
-               unitypackage_root_path_relative, clean):
+               root_dir, assembly_relative_dir, clean):
         """
         Creates .unitypackage that contains project assembly and assets
         :param path: Path to .csproj
         :param output_dir: Output directory into which .unitypackage is being built
         :param configuration: Debug or Release
         :param unity_project_path: Path to the unity project used to build .unitypackage
-        :param unitypackage_root_path_relative: Root path inside a unity_project_path used to export .unitypackage
+        :param root_dir: Root path inside a unity_project_path used to export .unitypackage
+        :param assembly_relative_dir: Relative path from $unity_project_path/$root_dir to export assemblies.
         :param clean: If set, other Unity Packages will be removed from the output folder if they match configuration
         """
         csproj = CsProj(csproj_path)
@@ -77,11 +78,11 @@ class UGetCli:
             raise RuntimeError('Debug symbols not found at path {0}. Make sure project is set up to generate debug '
                                'symbols.'.format(pdb_path))
 
-        if not unitypackage_root_path_relative:
-            unitypackage_root_path_relative = assembly_name
+        if not root_dir:
+            root_dir = assembly_name
 
-        unitypackage_export_root = self._get_unity_package_export_root(unity_project_path, unitypackage_root_path_relative)
-        click.secho("Unitypackage Export Path: {0}".format(unitypackage_export_root))
+        unitypackage_export_root = self._get_unity_package_export_root(unity_project_path, root_dir)
+        assembly_export_root = os.path.join(unitypackage_export_root, assembly_relative_dir)
 
         if not os.path.exists(unitypackage_export_root):
             os.makedirs(unitypackage_export_root)
@@ -89,8 +90,8 @@ class UGetCli:
             raise IOError("Can't copy assembly into Unity Project; path is not a valid directory: {0}"
                           .format(unitypackage_export_root))
 
-        shutil.copyfile(dll_path, os.path.join(unitypackage_export_root, dll_name))
-        shutil.copyfile(pdb_path, os.path.join(unitypackage_export_root, pdb_name))
+        shutil.copyfile(dll_path, os.path.join(assembly_export_root, dll_name))
+        shutil.copyfile(pdb_path, os.path.join(assembly_export_root, pdb_name))
 
         # Copy unity project folder into a temporary build location
         unitypackage_name = self.UNITYPACKAGE_FORMAT.format(name=assembly_name, version=version,
