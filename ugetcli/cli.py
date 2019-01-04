@@ -83,7 +83,7 @@ def build(ctx, path, configuration, msbuild_path, rebuild, config, config_path, 
 @click.option('-r', '--root-dir', type=click.Path(), default=None,
               help="Root directory inside the Unity Project into which assembly is copied. Used to export .unitypackage"
                    "If not provided, project name is used.")
-@click.option('-a', '--assembly-relative-dir', type=click.Path(), default=None,
+@click.option('-a', '--assembly-relative-dir', type=click.Path(), default=".",
               help="Relative directory from $unity-project-path/$root-dir to export assemblies.")
 @click.option('--clean', is_flag=True,
               help="If set, cleans other .unitypackage files with the same configuration at the output location.")
