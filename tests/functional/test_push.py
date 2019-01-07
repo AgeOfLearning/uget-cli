@@ -35,12 +35,13 @@ class TestUGetCliPush(unittest.TestCase):
 
         runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            create_empty_file("TestProject.1.2.3.nupkg")
+            os.mkdir("Output")
+            create_empty_file("Output/TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push'], obj={})
 
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
-        nuget_runner_instance.push.assert_called_with(os.path.normpath("TestProject.1.2.3.nupkg"), None, None)
+        nuget_runner_instance.push.assert_called_with(os.path.normpath("Output/TestProject.1.2.3.nupkg"), None, None)
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -59,12 +60,13 @@ class TestUGetCliPush(unittest.TestCase):
 
         runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            create_empty_file("TestProject.1.2.3.nupkg")
+            os.mkdir("Output")
+            create_empty_file("Output/TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--path', 'TestProject.csproj'], obj={})
 
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
-        nuget_runner_instance.push.assert_called_with(os.path.normpath("TestProject.1.2.3.nupkg"), None, None)
+        nuget_runner_instance.push.assert_called_with(os.path.normpath("Output/TestProject.1.2.3.nupkg"), None, None)
         csproj_mock.get_csproj_at_path.assert_called_with('TestProject.csproj')
 
     @patch('ugetcli.uget.NuGetRunner')
@@ -128,13 +130,14 @@ class TestUGetCliPush(unittest.TestCase):
 
         runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            create_empty_file("TestProject.1.2.3.nupkg")
+            os.mkdir("Output")
+            create_empty_file("Output/TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--feed', 'http://test.com/feed'], obj={})
 
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.push.assert_called_with(
-            os.path.normpath("TestProject.1.2.3.nupkg"), 'http://test.com/feed', None)
+            os.path.normpath("Output/TestProject.1.2.3.nupkg"), 'http://test.com/feed', None)
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -153,14 +156,15 @@ class TestUGetCliPush(unittest.TestCase):
 
         runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            create_empty_file("TestProject.1.2.3.nupkg")
+            os.mkdir("Output")
+            create_empty_file("Output/TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--nuget-path', 'custom_nuget.exe'], obj={})
 
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_mock.locat_nuget.assert_called_with("custom_nuget.exe")
         nuget_runner_instance.push.assert_called_with(
-            os.path.normpath("TestProject.1.2.3.nupkg"), None, None)
+            os.path.normpath("Output/TestProject.1.2.3.nupkg"), None, None)
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -179,14 +183,15 @@ class TestUGetCliPush(unittest.TestCase):
 
         runner = CliRunner(env={"NUGET_PATH": "custom_nuget.exe", "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            create_empty_file("TestProject.1.2.3.nupkg")
+            os.mkdir("Output")
+            create_empty_file("Output/TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push'], obj={})
 
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_mock.valid_nuget_executable.assert_called_with("custom_nuget.exe")
         nuget_runner_instance.push.assert_called_with(
-            os.path.normpath("TestProject.1.2.3.nupkg"), None, None)
+            os.path.normpath("Output/TestProject.1.2.3.nupkg"), None, None)
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -205,13 +210,14 @@ class TestUGetCliPush(unittest.TestCase):
 
         runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": None})
         with runner.isolated_filesystem():
-            create_empty_file("TestProject.1.2.3.nupkg")
+            os.mkdir("Output")
+            create_empty_file("Output/TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push', '--api-key', 'myapikey'], obj={})
 
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.push.assert_called_with(
-            os.path.normpath("TestProject.1.2.3.nupkg"), None, "myapikey")
+            os.path.normpath("Output/TestProject.1.2.3.nupkg"), None, "myapikey")
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -230,13 +236,14 @@ class TestUGetCliPush(unittest.TestCase):
 
         runner = CliRunner(env={"NUGET_PATH": None, "NUGET_API_KEY": "myapikey"})
         with runner.isolated_filesystem():
-            create_empty_file("TestProject.1.2.3.nupkg")
+            os.mkdir("Output")
+            create_empty_file("Output/TestProject.1.2.3.nupkg")
             result = runner.invoke(cli.ugetcli, ['push'], obj={})
 
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.push.assert_called_with(
-            os.path.normpath("TestProject.1.2.3.nupkg"), None, "myapikey")
+            os.path.normpath("Output/TestProject.1.2.3.nupkg"), None, "myapikey")
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
