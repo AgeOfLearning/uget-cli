@@ -129,7 +129,7 @@ def pack(ctx, path, output_dir, nuget_path, unitypackage_path, configuration, co
                  help='Push uGet Package (.nupkg) to the NuGet feed.')
 @click.option('-p', '--path', type=click.Path(), default='.',
               help='Path to NuGet Package (.nupkg) or Visual Studio project.')
-@click.option('-o', '--output-dir', type=click.Path(), default='.',
+@click.option('-o', '--output-dir', type=click.Path(), default='Output',
               help='Provides directory in which Nuget Package is being looked for. '
                    'Used only if path is a .csproj or a directory that contains one (optional).')
 @click.option('-f', '--feed', type=str,
