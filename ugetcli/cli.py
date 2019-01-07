@@ -1,6 +1,7 @@
 import os
 import json
 import click
+import pkg_resources
 from ugetcli.uget import UGetCli
 
 
@@ -45,6 +46,7 @@ def _create_command_class(config_option_key, config_path_option_key):
 
 # uGet Command Group
 @click.group()
+@click.version_option(version=pkg_resources.get_distribution("ugetcli").version)
 def ugetcli():
     pass
 
