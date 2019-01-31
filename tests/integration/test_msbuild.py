@@ -110,7 +110,7 @@ class TestUGetCliMSbuild(unittest.TestCase):
             configuration = "Debug"
             msbuild = MsBuildRunner(msbuild_path)
             msbuild.build(project_path, configuration, True)
-            expected_command = 'msbuild.exe {project_path} /t:Clean,Build /p:"Configuration={configuration}"' \
+            expected_command = 'msbuild.exe {project_path} /t:Clean,Build /p:"Configuration={configuration}" /p:"DebugType:full"' \
                                ' /verbosity:{verbosity}'.format(project_path=project_path, configuration=configuration,
                                                                 verbosity="minimal")
             mock_popen.assert_called_with(expected_command, shell=True)
