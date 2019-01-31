@@ -40,7 +40,7 @@ setup(
         ],
     },
     install_requires=requirements,
-    license="BSD 3-Clause License",
+    license="MIT",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
     keywords='ugetcli',
@@ -50,6 +50,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/AgeOfLearning/ugetcli',
-    version='0.3.3',
+    version='0.3.4',
     zip_safe=False,
 )
