@@ -53,13 +53,13 @@ uget build
 
 Arguments:
 
-**-p** / **--path** path to the Visual Studio Project (.csproj) or a directory containing one
+**-p** / **--path** path to the Visual Studio Project (.csproj) or a directory containing one. Default: current working directory 
 
-**-c** / **--configuration** configuration: *Debug* or *Release*
+**-c** / **--configuration** configuration: *Debug* or *Release*. Default: Release
 
-**-m** / **--msbuild-path** path to the msbuild executable. If not provided, uget cli will try to automatically find it. Can be provided with MSBUILD_PATH environment variable.
+**-m** / **--msbuild-path** path to the msbuild executable. If not provided, uget cli will try to automatically find it. Can be provided with MSBUILD_PATH environment variable. Default: determined based on the system
 
-**-r** / **--rebuild** (flag) if provided, clean rebuild will be triggered.
+**-r** / **--rebuild** (flag) if provided, clean rebuild will be triggered. Default: False
 
 
 uget create
@@ -69,25 +69,23 @@ uget create
 
 Arguments:
 
-**-p** / **--path** path to the Visual Studio Project (.csproj) or a directory containing one
+**-p** / **--path** path to the Visual Studio Project (.csproj) or a directory containing one. Default: current working directory
 
-**-o** / **--output-dir** output directory into which UnityPackage will be built
+**-o** / **--output-dir** output directory into which UnityPackage will be built. Default: "./Output" (relative to current working directory)
 
-**-c** / **--configuration** configuration: *Debug* or *Release*
+**-c** / **--configuration** configuration: *Debug* or *Release*. Default: Release
 
-**-u** / **--unity-path** path to Unity Editor.  Can be provided with UNITY_PATH environment variable.
+**-t** / **--unity-project-path** path to the Unity project used to build .unitypackage. Project can contain optional assets. Default: "./UnityProject" (relative to current working directory)
 
-**-t** / **--unity-project-path** path to the Unity project used to build .unitypackage. Project can contain optional assets.
+**-r** / **--root-dir** root directory inside the Unity Project into which assembly is copied. Used to export .unitypackage. If not provided, assembly name is used (relative to the unity-project-path).
 
-**-r** / **--root-dir** root directory inside the Unity Project into which assembly is copied. Used to export .unitypackage. If not provided, project name is used.
-
-**--clean** (flag) If set, cleans other .unitypackage files with the same configuration at the output location.
+**--clean** (flag) If set, cleans other .unitypackage files with the same configuration at the output location. Default: False (does not clean)
 
 **--unity-username** provides username for Unity editor. Can be provided with UNITY_USERNAME environment variable.
 
 **--unity-password** provides password for Unity editor. Can be provided with UNITY_PASSWORD environment variable.
 
-**--unity-serial** provides serial for Unity editor. Can be provided with UNITY_SERIAL environment variable.
+**--unity-serial** provides serial for Unity editor. Can be provided with UNITY_SERIAL environment variable. 
 
 
 
@@ -98,15 +96,15 @@ uget pack
 
 Arguments:
 
-**-p** / **--path** path to Visual Studio project (.csproj) or .nuspec file.
+**-p** / **--path** path to Visual Studio project (.csproj) or .nuspec file, or a directory containing one. Default: current working directory
 
-**-o** / **--output-dir** output NuGet package directory.
+**-o** / **--output-dir** output NuGet package directory. Default: "./Output" (relative to current working directory)
 
 **-n** / **--nuget-path** path to NuGet executable. Can be provided with NUGET_PATH environment variable.
 
-**-u** / **--unitypackage-path** path to .unitypackage.
+**-u** / **--unitypackage-path** path to .unitypackage. Default: "./UnityProject" (relative to current working directory)
 
-**-c** / **--configuration** configuration: *Debug* or *Release*
+**-c** / **--configuration** configuration: *Debug* or *Release*. Default: "Release"
 
 
 
@@ -117,15 +115,15 @@ uget push
 
 Arguments:
 
-**-p** / **--path** path to NuGet Package (.nupkg) or Visual Studio project.
+**-p** / **--path** path to NuGet Package (.nupkg) or Visual Studio project, or a directory containing one. Default: current working directory.
 
-**-o** / **--output-dir** provides directory in which Nuget Package is being looked for. Used only if path is a .csproj or a directory that contains one (optional).
+**-o** / **--output-dir** provides directory in which Nuget Package is being looked for. Used only if .nupkg is not provided via `path`.  Optional. Default: No value
 
-**-f** / **--feed** NuGet Feed URL.
+**-f** / **--feed** NuGet Feed URL. Default: No value. Must be provided explicitly.
 
-**-n** / **--nuget-path** path to NuGet executable. Can be provided with NUGET_PATH environment variable.
+**-n** / **--nuget-path** path to NuGet executable. Can be provided with NUGET_PATH environment variable. Default: no value
 
-**-a** / **--api-key** NuGet Api Key.  Can be provided with NUGET_API_KEY environment variable.
+**-a** / **--api-key** NuGet Api Key.  Can be provided with NUGET_API_KEY environment variable. Default: no value
 
 
 Configuration file
