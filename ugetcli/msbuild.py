@@ -48,10 +48,19 @@ class MsBuildRunner:
         # Attempt to find Visual Studio installation first, then fall back to msbuild from PATH
         if sys.platform == 'win32':
             # On windows, default msbuild locations are Visual Studio installation folder and .NET installation folder
-            msbuild_search_patterns = [
-                os.environ["ProgramFiles"] + "\\Microsoft Visual Studio\\*\\Community\\MSBuild\\*\\Bin\\MSBuild.exe",
-                os.environ['WINDIR'] + "\\Microsoft.NET\\Framework\\*\\MSBuild.exe"
-            ]
+            msbuild_search_patterns = []
+
+            vs_msbuild_pattern = "\\Microsoft Visual Studio\\*\\Community\\MSBuild\\*\\Bin\\MSBuild.exe"
+            dotnet_msbuild_pattern = "\\Microsoft.NET\\Framework\\*\\MSBuild.exe"
+
+            # Search for msbuild.exe in Visual Studio and .NET Framework installation directories
+            if "ProgramFiles" in os.environ:
+                msbuild_search_patterns.append(os.environ["ProgramFiles"] + vs_msbuild_pattern)
+            if "ProgramFiles(x86)" in os.environ:
+                msbuild_search_patterns.append(os.environ["ProgramFiles(x86)"] + vs_msbuild_pattern)
+            if "WINDIR" in os.environ:
+                msbuild_search_patterns.append(os.environ['WINDIR'] + dotnet_msbuild_pattern)
+
             for pattern in msbuild_search_patterns:
                 locations = glob.glob(pattern)
 
