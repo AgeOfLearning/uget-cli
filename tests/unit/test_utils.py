@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Integration tests for `ugetcli` package - `utils` module.
+Unit tests for `ugetcli` package - `utils` module.
 Tests functionality of the utils helper module
 """
 import unittest

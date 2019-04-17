@@ -43,11 +43,12 @@ class TestUGetCliNuGetRunner(unittest.TestCase):
         mock_popen.return_value = mock_process
 
         expected_command_str = "nuget.exe pack TestProject.csproj -OutputDirectory Output " \
+                               "-Version 1.0.0 " \
                                "-Verbosity normal " \
                                "-Properties \"unityPackagePath=TestProject.1.0.0.unitypackage;unityPackageExportRoot=Some/Path;Configuration=Debug\"" \
 
         nuget_runner = NuGetRunner("nuget.exe")
-        assert nuget_runner.pack("TestProject.csproj", "Output", "Debug", "TestProject.1.0.0.unitypackage", "Some/Path") == 0
+        assert nuget_runner.pack("TestProject.csproj", "Output", "Debug", "TestProject.1.0.0.unitypackage", "Some/Path", "1.0.0") == 0
         mock_popen.assert_called_with(expected_command_str, shell=True)
 
     @patch('ugetcli.nuget.Popen')

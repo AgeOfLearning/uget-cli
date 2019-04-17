@@ -17,10 +17,11 @@ class NuGetRunner:
         self.nuget_path = nuget_path
         self.debug = debug
 
-    def pack(self, path, output_dir, configuration, unitypackage_path, unitypackage_export_root):
+    def pack(self, path, output_dir, configuration, unitypackage_path, unitypackage_export_root, version):
         """ Runs NuGet to pack NuGet package """
         options = ["pack", path,
                    "-OutputDirectory", output_dir,
+                   "-Version", version,
                    "-Verbosity", "detailed" if self.debug else "normal",
                    "-Properties", "\"unityPackagePath={0};unityPackageExportRoot={1};Configuration={2}\"".format(unitypackage_path, unitypackage_export_root, configuration)]
 
@@ -77,3 +78,25 @@ class NuGetRunner:
         # Sorted is used to preserve consistency between python 2.7 and 3.6, mainly for unit testing purposes
         properties_joined = ";".join(reversed(properties_strings))  # key=value;key2=value2
         return properties_joined
+
+    @staticmethod
+    def get_normalized_nuget_pack_version(version):
+        """
+        By default, nuget drops 4th digit if it's a 0
+        This method does this so we can get correct nuget package name without parsing nuget tool output
+        For more info, see:
+        https://github.com/NuGet/Home/issues/5225
+        https://github.com/NuGet/Home/issues/3050
+        https://github.com/NuGet/Home/issues/2039
+        :param version:
+        :return: Normalized version, which nuget pack is expected to output
+        """
+        numbers = version.split(".")
+        if len(numbers) < 4:
+            return version  # No need to normalize
+        elif len(numbers) > 4:
+            raise click.UsageError("Invalid package version {0}. Package version can not contain more than 4 numbers.")
+        elif numbers[3] == "0":
+            return ".".join(numbers[:3])  # 4 numbers and last number is a zero, which we should drop
+        else:
+            return version  # No need to normalize

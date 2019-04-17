@@ -26,6 +26,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
@@ -51,6 +52,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
@@ -94,6 +96,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
@@ -121,6 +124,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
@@ -147,6 +151,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "custom_nuget.exe"
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
@@ -174,6 +179,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.valid_nuget_executable.return_value = True
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
@@ -201,6 +207,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
@@ -227,6 +234,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
@@ -253,6 +261,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"
@@ -288,6 +297,7 @@ class TestUGetCliPush(unittest.TestCase):
         nuget_runner_instance = MagicMock()
         nuget_runner_mock.return_value = nuget_runner_instance
         nuget_runner_mock.locate_nuget.return_value = "nuget.exe"
+        nuget_runner_mock.get_normalized_nuget_pack_version.return_value = "1.2.3"
 
         csproj_instance = MagicMock()
         csproj_instance.get_assembly_name.return_value = "TestProject"

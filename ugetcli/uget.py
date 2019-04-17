@@ -164,7 +164,7 @@ class UGetCli:
 
         unitypackage_export_root = self._get_unity_package_export_root(unity_project_path, unitypackage_root_path_relative)
 
-        return nuget_runner.pack(path, output_dir, configuration, unitypackage_path, unitypackage_export_root)
+        return nuget_runner.pack(path, output_dir, configuration, unitypackage_path, unitypackage_export_root, version)
 
     def push(self, path, output_dir, feed, nuget_path, api_key):
         """
@@ -259,19 +259,31 @@ class UGetCli:
 
         csproj_path = CsProj.get_csproj_at_path(path)
 
-        if not csproj_path:
-            raise click.UsageError("Failed to find Visual Studio project at path " + path)
+        if csproj_path:
+            csproj = CsProj(csproj_path)
 
-        csproj = CsProj(csproj_path)
+            assembly_name = csproj.get_assembly_name()
+            version = csproj.get_assembly_version()
+            normalized_version = NuGetRunner.get_normalized_nuget_pack_version(version)
 
-        assembly_name = csproj.get_assembly_name()
-        version = csproj.get_assembly_version()
+            nupkg_filename = "{0}.{1}.nupkg".format(assembly_name, normalized_version)
+            nupkg_path = os.path.normpath(os.path.join(output_dir, nupkg_filename))
 
-        nupkg_filename = "{0}.{1}.nupkg".format(assembly_name, version)
-        nupkg_path = os.path.normpath(os.path.join(output_dir, nupkg_filename))
+            if not os.path.isfile(nupkg_path):
+                raise click.UsageError("Failed to find Nuget Package (.nupkg) at path " + nupkg_path)
 
-        if not os.path.isfile(nupkg_path):
-            raise click.UsageError("Failed to find Nuget Package (.nupkg) at path " + nupkg_path)
+        else:
+            nuspec_file_path = NuSpec.get_nuspec_at_path(path)
+            if nuspec_file_path is not None:
+                nuspec = NuSpec(path, self.debug)
+                package_id = nuspec.get_package_id()
+                version = nuspec.get_package_version()
+                normalized_version = NuGetRunner.get_normalized_nuget_pack_version(version)
+
+                nupkg_filename = "{0}.{1}.nupkg".format(package_id, normalized_version)
+                nupkg_path = os.path.normpath(os.path.join(output_dir, nupkg_filename))
+            else:
+                raise click.UsageError("Path must be a valid path to .nuspec, .csproj, or directory containing either")
 
         return nupkg_path
 

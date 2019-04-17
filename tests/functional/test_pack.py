@@ -42,7 +42,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
+            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"), "1.2.3")
 
     @patch('ugetcli.uget.NuSpec')
     @patch('ugetcli.uget.NuGetRunner')
@@ -66,7 +66,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
+            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"), "1.2.3")
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -90,7 +90,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "MyOutput", "Release", os.path.normpath("MyOutput/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
+            ".", "MyOutput", "Release", os.path.normpath("MyOutput/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"), "1.2.3")
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -114,7 +114,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
+            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"), "1.2.3")
         nuget_runner_mock.valid_nuget_executable.assert_called_with("custom_nuget.exe")
 
     @patch('ugetcli.uget.CsProj')
@@ -139,7 +139,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
+            ".", "Output", "Release", os.path.normpath("Output/TestProject_1.2.3_Release.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"), "1.2.3")
         nuget_runner_mock.valid_nuget_executable.assert_called_with("custom_nuget.exe")
 
     @patch('ugetcli.uget.CsProj')
@@ -166,7 +166,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Release", "MyUnityPackage.unitypackage", os.path.normpath("UnityProject/Assets/TestProject"))
+            ".", "Output", "Release", "MyUnityPackage.unitypackage", os.path.normpath("UnityProject/Assets/TestProject"), "1.2.3")
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -191,7 +191,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "Output", "Debug", os.path.normpath("Output/TestProject_1.2.3_Debug.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"))
+            ".", "Output", "Debug", os.path.normpath("Output/TestProject_1.2.3_Debug.unitypackage"), os.path.normpath("UnityProject/Assets/TestProject"), "1.2.3")
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -225,7 +225,7 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage", os.path.normpath("UnityProject/Assets/TestProject"))
+            ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage", os.path.normpath("UnityProject/Assets/TestProject"), "1.2.3")
 
     @patch('ugetcli.uget.CsProj')
     @patch('ugetcli.uget.NuGetRunner')
@@ -262,4 +262,4 @@ class TestUGetCliPack(unittest.TestCase):
         assert result.exit_code == 0, result
         nuget_runner_mock.assert_called_with('custom_nuget.exe', False)
         nuget_runner_instance.pack.assert_called_with(
-            ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage", os.path.normpath("UnityProject/Assets/TestProject"))
+            ".", "CustomOutput", "Debug", "MyUnityPackage.unitypackage", os.path.normpath("UnityProject/Assets/TestProject"), "1.2.3")
