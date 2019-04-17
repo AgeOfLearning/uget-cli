@@ -260,7 +260,7 @@ class UGetCli:
         csproj_path = CsProj.get_csproj_at_path(path)
 
         if not csproj_path:
-            raise click.UsageError("Failed to find Nuget Package (.nupkg) or Visual Studio project at path " + path)
+            raise click.UsageError("Failed to find Visual Studio project at path " + path)
 
         csproj = CsProj(csproj_path)
 
@@ -271,7 +271,7 @@ class UGetCli:
         nupkg_path = os.path.normpath(os.path.join(output_dir, nupkg_filename))
 
         if not os.path.isfile(nupkg_path):
-            raise click.UsageError("Failed to find Nuget Package (.nupkg) or Visual Studio project at path " + path)
+            raise click.UsageError("Failed to find Nuget Package (.nupkg) at path " + nupkg_path)
 
         return nupkg_path
 
