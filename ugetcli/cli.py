@@ -3,6 +3,8 @@ import json
 import click
 import pkg_resources
 from ugetcli.uget import UGetCli
+from pkg_resources import iter_entry_points
+from click_plugins import with_plugins
 
 
 # Helper method for a command and pre-load value from the config file
@@ -45,6 +47,7 @@ def _create_command_class(config_option_key, config_path_option_key):
 
 
 # uGet Command Group
+@with_plugins(iter_entry_points('ugetcli.cli_plugins'))
 @click.group()
 @click.version_option(version=pkg_resources.get_distribution("ugetcli").version)
 def ugetcli():

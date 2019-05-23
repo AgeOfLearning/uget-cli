@@ -12,3 +12,4 @@ pytest==3.8.2
 pytest-runner==4.2
 mock==2.0.0
 click==7.0
+click-plugins==1.1.1
