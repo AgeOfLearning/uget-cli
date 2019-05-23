@@ -96,8 +96,8 @@ class UGetCli:
             raise IOError("Can't copy assembly into Unity Project; path is not a valid directory: {0}"
                           .format(unitypackage_export_root))
 
-        shutil.copyfile(dll_path, os.path.join(assembly_export_root, dll_name))
-        shutil.copyfile(pdb_path, os.path.join(assembly_export_root, pdb_name))
+        shutil.copyfile(dll_path, os.path.abspath(os.path.join(assembly_export_root, dll_name)))
+        shutil.copyfile(pdb_path, os.path.abspath(os.path.join(assembly_export_root, pdb_name)))
 
         # Copy unity project folder into a temporary build location
         unitypackage_name = self.UNITYPACKAGE_FORMAT.format(name=assembly_name, version=version,
