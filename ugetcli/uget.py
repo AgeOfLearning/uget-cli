@@ -106,12 +106,12 @@ class UGetCli:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        unitypackage_path = os.path.join(output_dir, unitypackage_name)
+        unitypackage_path = os.path.abspath(os.path.join(output_dir, unitypackage_name))
 
         # Create .unitypackage
         unity_runner = UnityPackageRunner(self.debug)
         click.secho("Exporting Unitypackage: {0}".format(unitypackage_name))
-        unity_runner.export_unitypackage(unitypackage_export_root, unitypackage_path)
+        unity_runner.export_unitypackage(os.path.abspath(unitypackage_export_root), unitypackage_path)
 
         if not os.path.isfile(unitypackage_path):
             raise RuntimeError("UnityPackage not found at path: " + unitypackage_path)

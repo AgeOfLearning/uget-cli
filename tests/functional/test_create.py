@@ -30,8 +30,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('UnityProject/Assets/TestProject')
-            assert args[1] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
+            assert os.path.normpath('UnityProject/Assets/TestProject') in args[0]
+            assert os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
@@ -70,8 +70,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('UnityProject/Assets/TestProject')
-            assert args[1] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
+            assert os.path.normpath('UnityProject/Assets/TestProject') in args[0]
+            assert os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
@@ -110,8 +110,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('UnityProject/Assets/TestProject')
-            assert args[1] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
+            assert os.path.normpath('UnityProject/Assets/TestProject') in args[0]
+            assert os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
@@ -150,8 +150,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('UnityProject/Assets/TestProject')
-            assert args[1] == os.path.normpath('out/TestProject_1.0.0_Release.unitypackage')
+            assert os.path.normpath('UnityProject/Assets/TestProject') in args[0]
+            assert os.path.normpath('out/TestProject_1.0.0_Release.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
@@ -189,8 +189,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('UnityProject/Assets/TestProject')
-            assert args[1] == os.path.normpath('Output/TestProject_1.0.0_Debug.unitypackage')
+            assert os.path.normpath('UnityProject/Assets/TestProject') in args[0]
+            assert os.path.normpath('Output/TestProject_1.0.0_Debug.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
@@ -229,8 +229,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'MyUnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('MyUnityProject/Assets/TestProject')
-            assert args[1] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
+            assert os.path.normpath('UnityProject/Assets/TestProject') in args[0]
+            assert os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
@@ -269,8 +269,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('UnityProject/Assets/MyUnityPackageRoot')
-            assert args[1] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
+            assert os.path.normpath('UnityProject/Assets/MyUnityPackageRoot') in args[0]
+            assert os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
@@ -309,8 +309,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('UnityProject/Assets/TestProject')
-            assert args[1] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
+            assert os.path.normpath('UnityProject/Assets/TestProject') in args[0]
+            assert os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
@@ -357,8 +357,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'UnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('UnityProject/Assets/TestProject')
-            assert args[1] == os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage')
+            assert os.path.normpath('UnityProject/Assets/TestProject') in args[0]
+            assert os.path.normpath('Output/TestProject_1.0.0_Release.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
@@ -397,8 +397,8 @@ class TestUGetCliCreate(unittest.TestCase):
         # Mock running Unity to export unity package
         def export_unitypackage_mock(*args, **kwargs):
             assert 'CustomUnityProject' in args[0]  # In temp folder
-            assert args[0] == os.path.normpath('CustomUnityProject/Assets/MyUnityPackage')
-            assert args[1] == os.path.normpath('CustomOutput/TestProject_1.0.0_Debug.unitypackage')
+            assert os.path.normpath('CustomUnityProject/Assets/MyUnityPackage') in args[0]
+            assert os.path.normpath('CustomOutput/TestProject_1.0.0_Debug.unitypackage') in args[1]
             create_empty_file(args[1])
             invocation_results[0] = True
             return 0
